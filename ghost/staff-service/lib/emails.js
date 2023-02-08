@@ -150,11 +150,14 @@ class StaffServiceEmails {
 
             const templateData = {
                 targetUrl: mention.target,
+                targetName: mention.resource.name,
                 sourceUrl: mention.source,
                 sourceTitle: mention.sourceTitle,
                 sourceSiteTitle: mention.sourceSiteTitle,
+                sourceExcerpt: mention.sourceExcerpt,
                 sourceFavicon: mention.sourceFavicon,
                 sourceAuthor: mention.sourceAuthor,
+                sourceFeaturedImage: mention.sourceFeaturedImage,
                 siteTitle: this.settingsCache.get('title'),
                 siteUrl: this.urlUtils.getSiteUrl(),
                 siteDomain: this.siteDomain,
