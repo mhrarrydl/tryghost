@@ -176,7 +176,7 @@ describe('Webmentions (receiving)', function () {
         emailMockReceiver.sentEmailCount(0);
     });
 
-    // TODO: this test is flaky, it fails in CI all too often. Need to
+    // TODO: this test is flaky, it fails in CI all too often. Need to investigate.
     // it('is rate limited against spamming mention requests', async function () {
     //     await dbUtils.truncate('brute');
     //     const webmentionBlock = configUtils.config.get('spam').webmentions_block;
