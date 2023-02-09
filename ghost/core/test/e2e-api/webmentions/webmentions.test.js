@@ -9,6 +9,7 @@ const models = require('../../../core/server/models');
 const assert = require('assert');
 const urlUtils = require('../../../core/shared/url-utils');
 const nock = require('nock');
+const sinon = require('sinon');
 const jobsService = require('../../../core/server/services/jobs');
 const DomainEvents = require('@tryghost/domain-events');
 
@@ -177,8 +178,11 @@ describe('Webmentions (receiving)', function () {
     });
 
     it('is rate limited against spamming mention requests', async function () {
+        const now = new Date();
+        const clock = sinon.useFakeTimers(now.getTime());
         await dbUtils.truncate('brute');
         const webmentionBlock = configUtils.config.get('spam').webmentions_block;
+        // console.log(webmentionBlock.freeRetries);
         const targetUrl = new URL(urlUtils.getSiteUrl());
         const sourceUrl = new URL('http://testpage.com/external-article-2/');
         const html = `
@@ -191,7 +195,6 @@ describe('Webmentions (receiving)', function () {
         nock(sourceUrl.origin)
             .get(sourceUrl.pathname)
             .reply(200, html, {'Content-Type': 'text/html'});
-
         // +1 because this is a retry count, so we have one request + the retries, then blocked
         for (let i = 0; i < webmentionBlock.freeRetries + 1; i++) {
             await agent.post('/receive/')
@@ -202,7 +205,7 @@ describe('Webmentions (receiving)', function () {
                 })
                 .expectStatus(202);
         }
-
+        clock.tick(1); // increment the clock by 1 second
         await agent
             .post('/receive/')
             .body({
