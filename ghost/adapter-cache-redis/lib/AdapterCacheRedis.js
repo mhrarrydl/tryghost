@@ -54,7 +54,7 @@ class AdapterCacheRedis extends BaseCacheAdapter {
     }
 
     #getPrimaryRedisNode() {
-        if (this.redisClient.constructor.name !== "Cluster") {
+        if (this.redisClient.constructor.name !== 'Cluster') {
             return this.redisClient;
         }
         const slot = calculateSlot(this.keyPrefix);
