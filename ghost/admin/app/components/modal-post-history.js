@@ -83,8 +83,9 @@ export default ModalComponent.extend({
         return {
             post: this.model
         };
+    },
+
+    get revisionList() {
+        return this.post.get('postRevisions').toArray().reverse();
     }
-    // get reversedPosts() {
-    //     return this.post.toArray().reverse();
-    // }
 });
