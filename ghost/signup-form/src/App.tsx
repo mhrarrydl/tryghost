@@ -29,11 +29,20 @@ const App: React.FC<AppProps> = ({scriptTag}) => {
         } as Page);
     };
 
+    // ideally we would use import, but the i18n lib doesn't support Typescript + React's import
+    // been through many iterations of trying to get it to work, with ts declarations, etc
+    // no luck, so resorting to require for now
+    const i18nLib = require('@tryghost/i18n');
+
+    const i18nLanguage = 'en';
+    const i18n = i18nLib(i18nLanguage, 'portal');
+
     const context = {
         page,
         api,
         options,
-        setPage: _setPage
+        setPage: _setPage,
+        i18n: i18n.t
     };
 
     const PageComponent = pages[page.name];
