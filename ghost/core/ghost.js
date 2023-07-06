@@ -10,7 +10,15 @@
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 const argv = process.argv;
-const mode = argv[2];
+let mode = argv[2];
+
+if (process.env.GHOST_NO_FRONTEND) {
+    mode = 'nofe';
+}
+
+if (process.env.GHOST_NEW_FRONTEND) {
+    mode = 'newfe';
+}
 
 const command = require('./core/cli/command');
 
