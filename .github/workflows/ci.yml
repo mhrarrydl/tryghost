@@ -48,6 +48,7 @@ jobs:
           NUMBER_OF_COMMITS=$(printf "%s\n" '${{ toJson(github.event.commits.*.id) }}' | jq length)
           echo "There are $NUMBER_OF_COMMITS commits in this push."
           echo "BASE_COMMIT=$(git rev-parse HEAD~$NUMBER_OF_COMMITS)" >> $GITHUB_ENV
+          echo "IS_PROTOTYPE_BRANCH=${{ github.ref == 'refs/heads/arch' }}" >> $GITHUB_ENV
 
       - name: Get metadata (pull_request)
         if: github.event_name == 'pull_request'
@@ -93,16 +94,15 @@ jobs:
             any-code:
               - '!**/*.md'
     outputs:
-      changed_admin: ${{ steps.changed.outputs.admin }}
-      changed_core: ${{ steps.changed.outputs.core }}
-      changed_admin_x_settings: ${{ steps.changed.outputs.admin-x-settings }}
-      changed_announcement_bar: ${{ steps.changed.outputs.announcement-bar }}
-      changed_comments_ui: ${{ steps.changed.outputs.comments-ui }}
-      changed_portal: ${{ steps.changed.outputs.portal }}
-      changed_signup_form: ${{ steps.changed.outputs.signup-form }}
-      changed_sodo_search: ${{ steps.changed.outputs.sodo-search }}
-      changed_any_code: ${{ steps.changed.outputs.any-code }}
-      base_commit: ${{ env.BASE_COMMIT }}
+      changed_admin: ${{ steps.changed.outputs.admin && env.IS_PROTOTYPE_BRANCH != 'true' }}
+      changed_core: ${{ steps.changed.outputs.core && env.IS_PROTOTYPE_BRANCH != 'true' }}
+      changed_admin_x_settings: ${{ steps.changed.outputs.admin-x-settings && env.IS_PROTOTYPE_BRANCH != 'true' }}
+      changed_announcement_bar: ${{ steps.changed.outputs.announcement-bar && env.IS_PROTOTYPE_BRANCH != 'true' }}
+      changed_comments_ui: ${{ steps.changed.outputs.comments-ui && env.IS_PROTOTYPE_BRANCH != 'true' }}
+      changed_portal: ${{ steps.changed.outputs.portal && env.IS_PROTOTYPE_BRANCH != 'true' }}
+      changed_signup_form: ${{ steps.changed.outputs.signup-form && env.IS_PROTOTYPE_BRANCH != 'true' }}
+      changed_sodo_search: ${{ steps.changed.outputs.sodo-search && env.IS_PROTOTYPE_BRANCH != 'true' }}
+      changed_any_code: ${{ steps.changed.outputs.any-code && env.IS_PROTOTYPE_BRANCH != 'true' }}
       is_canary_branch: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/arch') }}
       is_main: ${{ github.ref == 'refs/heads/main' }}
 
