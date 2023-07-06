@@ -749,3 +749,13 @@ jobs:
         if: contains(needs.*.result, 'failure')
         run: |
           echo "One of the dependent jobs have failed. You may need to re-run it." && exit 1
+
+  canary:
+    needs:
+      [
+        job_get_metadata
+      ]
+    if: needs.job_get_metadata.outputs.is_canary_branch == 'true'
+    name: Canary
+    secrets: inherit
+    uses: tryghost/actions/.github/workflows/canary.yml@main
