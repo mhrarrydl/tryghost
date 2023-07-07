@@ -139,6 +139,7 @@
     "@tryghost/package-json": "0.0.0",
     "@tryghost/post-revisions": "0.0.0",
     "@tryghost/posts-service": "0.0.0",
+    "@tryghost/proto-frontend": "0.0.0",
     "@tryghost/pretty-cli": "1.2.36",
     "@tryghost/promise": "0.3.4",
     "@tryghost/request": "0.1.39",
