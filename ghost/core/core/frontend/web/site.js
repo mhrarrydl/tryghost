@@ -149,10 +149,10 @@ module.exports = function setupSiteApp(routerConfig) {
     debug('General middleware done');
 
     if (routerConfig.newRouter) {
-        // @TODO: write a new router here!
-        siteApp.use((req, res) => {
-            res.json({router: 'ProtoRouter', path: req.path, type: 'unknown', data: {}, template: 'unknown'});
-        });
+        const {api, ProtoRouter} = routerConfig.newRouter;
+        // This will likely look very different, it's just prototype code to inject new routing logic for now
+        router = new ProtoRouter({express, config, api});
+        siteApp.use(router.routeRequest.bind(router));
     } else {
         router = siteRoutes(routerConfig);
         Object.setPrototypeOf(SiteRouter, router);

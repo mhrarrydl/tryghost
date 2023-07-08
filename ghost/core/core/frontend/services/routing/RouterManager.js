@@ -191,7 +191,7 @@ module.exports = RouterManager;
  * @typedef {Object} RouterConfig
  * @property {RouteSettings} [routeSettings] - JSON config representing routes
  * @property {URLService} [urlService] - service providing resource URL utility functions such as owns, getUrlByResourceId, and getResourceById
- * @property {boolean} [newRouter] - whether the new router is enabled or not
+ * @property {object} [newRouter] - if the new router is enabled, then an object full of stuff for it lives here
  */
 
 /**
@@ -208,4 +208,8 @@ module.exports = RouterManager;
  * @property {Function} getResourceById
  * @property {Function} onRouterAddedType
  * @property {Function} onRouterUpdated
+ */
+
+/**
+ * @typedef {Object} ProtoRouter
  */
