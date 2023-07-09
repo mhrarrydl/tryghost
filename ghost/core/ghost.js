@@ -13,11 +13,11 @@ const argv = process.argv;
 let mode = argv[2];
 
 if (process.env.GHOST_NO_FRONTEND) {
-    mode = 'nofe';
+    mode = 'no-frontend';
 }
 
 if (process.env.GHOST_NEW_FRONTEND) {
-    mode = 'newfe';
+    mode = 'new-frontend';
 }
 
 const command = require('./core/cli/command');
@@ -30,13 +30,13 @@ case 'generate-data':
 case 'record-test':
     command.run(mode);
     break;
-case 'nofe':
+case 'no-frontend':
     // Boot sequence without frontend
     require('./core/boot')({frontend: false});
     break;
-case 'newfe':
+case 'new-frontend':
     // Boot sequence with new frontend
-    require('./core/boot')({frontend: false, newfe: true});
+    require('./core/boot')({frontend: false, newFrontend: true});
     break;
 default:
     // Standard boot sequence

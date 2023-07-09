@@ -228,10 +228,10 @@ async function initFrontend(dataService) {
  * @param {Object} options
  * @param {Boolean} options.backend
  * @param {Boolean} options.frontend
- * @param {Boolean} options.newfe
+ * @param {Boolean} options.newFrontend
  * @param {Object} options.config
  */
-async function initExpressApps({frontend, backend, newfe, config}) {
+async function initExpressApps({frontend, backend, newFrontend, config}) {
     debug('Begin: initExpressApps');
 
     const parentApp = require('./server/web/parent/app')();
@@ -250,10 +250,10 @@ async function initExpressApps({frontend, backend, newfe, config}) {
         const urlService = require('./server/services/url');
         const frontendApp = require('./server/web/parent/frontend')({urlService});
         parentApp.use(vhost(config.getFrontendMountPath(), frontendApp));
-    } else if (newfe) {
+    } else if (newFrontend) {
         const {ProtoFrontend} = require('@tryghost/proto-frontend');
-        const newFrontend = new ProtoFrontend({express});
-        parentApp.use(vhost(config.getFrontendMountPath(), newFrontend.app));
+        const protoFrontend = new ProtoFrontend({express});
+        parentApp.use(vhost(config.getFrontendMountPath(), protoFrontend.app));
     }
 
     debug('End: initExpressApps');
@@ -430,10 +430,10 @@ async function initBackgroundServices({config}) {
  * @param {Boolean} [options.backend]
  * @param {Boolean} [options.frontend]
  * @param {Boolean} [options.server]
- * @param {Boolean} [options.newfe]
+ * @param {Boolean} [options.newFrontend]
  * @returns {Promise<object>} ghostServer
  */
-async function bootGhost({backend = true, frontend = true, server = true, newfe = false} = {}) {
+async function bootGhost({backend = true, frontend = true, server = true, newFrontend = false} = {}) {
     // Metrics
     const startTime = Date.now();
     debug('Begin Boot');
@@ -512,7 +512,7 @@ async function bootGhost({backend = true, frontend = true, server = true, newfe 
         if (frontend) {
             await initFrontend(dataService);
         }
-        const ghostApp = await initExpressApps({frontend, backend, newfe, config});
+        const ghostApp = await initExpressApps({frontend, backend, newFrontend, config});
 
         if (frontend) {
             await initDynamicRouting();

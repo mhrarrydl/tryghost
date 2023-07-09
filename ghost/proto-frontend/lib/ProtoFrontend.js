@@ -1,9 +1,9 @@
-const debug = require('@tryghost/debug')('newfe');
+const debug = require('@tryghost/debug')('newFrontend');
 const DemoRouter = require('./DemoRouter');
 
 module.exports = class ProtoFrontend {
     constructor({express}) {
-        this.app = express('newfe');
+        this.app = express('newFrontend');
 
         // Later we could switch this based on a labs dropdown if we need to
         this.activeRouter = 'demoRouter';
