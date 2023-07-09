@@ -190,7 +190,8 @@ module.exports = RouterManager;
 /**
  * @typedef {Object} RouterConfig
  * @property {RouteSettings} [routeSettings] - JSON config representing routes
- * @property {URLService} urlService - service providing resource URL utility functions such as owns, getUrlByResourceId, and getResourceById
+ * @property {URLService} [urlService] - service providing resource URL utility functions such as owns, getUrlByResourceId, and getResourceById
+ * @property {boolean} [newRouter] - whether the new router is enabled or not
  */
 
 /**

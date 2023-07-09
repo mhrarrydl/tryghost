@@ -20,6 +20,10 @@ if (process.env.GHOST_NEW_FRONTEND) {
     mode = 'new-frontend';
 }
 
+if (process.env.GHOST_NEW_ROUTER) {
+    mode = 'new-router';
+}
+
 const command = require('./core/cli/command');
 
 // Switch between boot modes
@@ -38,6 +42,11 @@ case 'new-frontend':
     // Boot sequence with new frontend
     require('./core/boot')({frontend: false, newFrontend: true});
     break;
+case 'new-router':
+    // Boot sequence with new router
+    require('./core/boot')({frontend: true, newRouter: true});
+    break;
+
 default:
     // Standard boot sequence
     require('./core/boot')();

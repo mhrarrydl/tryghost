@@ -148,11 +148,18 @@ module.exports = function setupSiteApp(routerConfig) {
 
     debug('General middleware done');
 
-    router = siteRoutes(routerConfig);
-    Object.setPrototypeOf(SiteRouter, router);
+    if (routerConfig.newRouter) {
+        // @TODO: write a new router here!
+        siteApp.use((req, res) => {
+            res.json({router: 'ProtoRouter', path: req.path, type: 'unknown', data: {}, template: 'unknown'});
+        });
+    } else {
+        router = siteRoutes(routerConfig);
+        Object.setPrototypeOf(SiteRouter, router);
 
-    // Set up Frontend routes (including private site routes)
-    siteApp.use(SiteRouter);
+        // Set up Frontend routes (including private site routes)
+        siteApp.use(SiteRouter);
+    }
 
     // ### Error handlers
     siteApp.use(errorHandler.pageNotFound);

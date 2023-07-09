@@ -80,8 +80,9 @@ async function initDatabase({config}) {
  * @param {object} options.config
  * @param {object} options.bootLogger
  * @param {boolean} options.frontend
+ * @param {boolean} options.newRouter
  */
-async function initCore({ghostServer, config, bootLogger, frontend}) {
+async function initCore({ghostServer, config, bootLogger, frontend, newRouter}) {
     debug('Begin: initCore');
 
     // URL Utils is a bit slow, put it here so the timing is visible separate from models
@@ -119,7 +120,7 @@ async function initCore({ghostServer, config, bootLogger, frontend}) {
             bootLogger.metric('url-service', urlServiceStart);
             bootLogger.log('URL Service Ready');
         },
-        calculateRoutes: frontend,
+        calculateRoutes: frontend && !newRouter,
         urlCache: !frontend // hacky parameter to make the cache initialization kick in as we can't initialize labs before the boot
     });
     debug('End: Url Service');
@@ -229,9 +230,10 @@ async function initFrontend(dataService) {
  * @param {Boolean} options.backend
  * @param {Boolean} options.frontend
  * @param {Boolean} options.newFrontend
+ * @param {Boolean} options.newRouter
  * @param {Object} options.config
  */
-async function initExpressApps({frontend, backend, newFrontend, config}) {
+async function initExpressApps({frontend, backend, newFrontend, newRouter, config}) {
     debug('Begin: initExpressApps');
 
     const parentApp = require('./server/web/parent/app')();
@@ -246,9 +248,17 @@ async function initExpressApps({frontend, backend, newFrontend, config}) {
     }
 
     if (frontend) {
-        // SITE + MEMBERS
-        const urlService = require('./server/services/url');
-        const frontendApp = require('./server/web/parent/frontend')({urlService});
+        let frontendApp;
+
+        if (newRouter) {
+            // LOOK MOM, NO URLSERVICE! :tada:
+            frontendApp = require('./server/web/parent/frontend')({newRouter: true});
+        } else {
+            // SITE + MEMBERS
+            const urlService = require('./server/services/url');
+            frontendApp = require('./server/web/parent/frontend')({urlService});
+        }
+
         parentApp.use(vhost(config.getFrontendMountPath(), frontendApp));
     } else if (newFrontend) {
         const {ProtoFrontend} = require('@tryghost/proto-frontend');
@@ -431,9 +441,10 @@ async function initBackgroundServices({config}) {
  * @param {Boolean} [options.frontend]
  * @param {Boolean} [options.server]
  * @param {Boolean} [options.newFrontend]
+ * @param {Boolean} [options.newRouter]
  * @returns {Promise<object>} ghostServer
  */
-async function bootGhost({backend = true, frontend = true, server = true, newFrontend = false} = {}) {
+async function bootGhost({backend = true, frontend = true, server = true, newFrontend = false, newRouter = false} = {}) {
     // Metrics
     const startTime = Date.now();
     debug('Begin Boot');
@@ -506,15 +517,15 @@ async function bootGhost({backend = true, frontend = true, server = true, newFro
 
         // Step 4 - Load Ghost with all its services
         debug('Begin: Load Ghost Services & Apps');
-        await initCore({ghostServer, config, bootLogger, frontend});
+        await initCore({ghostServer, config, bootLogger, frontend, newRouter});
         const {dataService} = await initServicesForFrontend({bootLogger});
 
         if (frontend) {
             await initFrontend(dataService);
         }
-        const ghostApp = await initExpressApps({frontend, backend, newFrontend, config});
+        const ghostApp = await initExpressApps({frontend, backend, newFrontend, newRouter, config});
 
-        if (frontend) {
+        if (frontend && !newRouter) {
             await initDynamicRouting();
             await initAppService();
         }
