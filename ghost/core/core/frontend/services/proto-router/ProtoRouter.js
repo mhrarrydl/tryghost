@@ -4,9 +4,10 @@ const {checks} = require('../data');
 const rendering = require('../rendering');
 
 module.exports = class ProtoRouter {
-    constructor({express, config, api}) {
+    constructor({express, config, urlUtils, api}) {
         this.express = express;
         this.config = config;
+        this.urlUtils = urlUtils;
         this.api = api;
     }
 
@@ -18,7 +19,9 @@ module.exports = class ProtoRouter {
         let baseUrl = this.baseUrl();
 
         if (checks.isPost(data)) {
-            baseUrl += `${data.slug}-${data.id}/`;
+            baseUrl = this.urlUtils.urlJoin(baseUrl, `/${data.slug}-${data.id}/`);
+        } else if (checks.isNav(data)) {
+            baseUrl = this.urlUtils.urlJoin(baseUrl, `/${data.url}/`);
         }
 
         return baseUrl;
@@ -32,18 +35,18 @@ module.exports = class ProtoRouter {
 
         // CASE: the default unmovable archive page
         if (req.path === '/archive/') {
-            let posts = await this.api.posts.browse({limit: 15});
+            let posts = await this.api.posts.browse({limit: 15, formats: ['html']});
 
             posts.posts.forEach((post) => {
                 post.url = `${this.config.getSiteUrl()}${post.slug}-${post.id}/`;
             });
 
             response.data = posts;
+            response.data.pagination = posts.meta.pagination;
             response.type = 'archive';
 
             res.routerOptions = {
-                type: 'channel',
-                identifier: 'home'
+                type: 'channel'
             };
 
             rendering.renderer(req, res, posts);
@@ -76,6 +79,7 @@ module.exports = class ProtoRouter {
             res.status(404).send(html);
         }
 
-        debug('response', response, res.routerOptions);
+        debug('response', response);
+        debug('routerOptions', res.routerOptions);
     }
 };
