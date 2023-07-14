@@ -14,7 +14,14 @@ const {getMetaDataUrl} = metaData;
 
 module.exports = function url(options) {
     const absolute = options && options.hash.absolute && options.hash.absolute !== 'false';
-    let outputUrl = getMetaDataUrl(this, absolute);
+    let outputUrl;
+    if (options.data.root.settings.router) {
+        // DIRTY HACK for Routing 2.0 - Just so we can change code in as few places as possible
+        const router = options.data.root.settings.router;
+        outputUrl = router.urlFor(this);
+    } else {
+        outputUrl = getMetaDataUrl(this, absolute);
+    }
 
     try {
         outputUrl = encodeURI(decodeURI(outputUrl)).replace(/%5B/g, '[').replace(/%5D/g, ']');

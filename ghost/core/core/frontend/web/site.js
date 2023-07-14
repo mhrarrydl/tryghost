@@ -152,8 +152,10 @@ module.exports = function setupSiteApp(routerConfig) {
         const {api, ProtoRouter} = routerConfig.newRouter;
         // This will likely look very different, it's just prototype code to inject new routing logic for now
         router = new ProtoRouter({express, config, api});
+        siteApp.set('router', router);
         siteApp.use(router.routeRequest.bind(router));
     } else {
+        siteApp.set('router', 'og');
         router = siteRoutes(routerConfig);
         Object.setPrototypeOf(SiteRouter, router);
 
