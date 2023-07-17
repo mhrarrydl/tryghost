@@ -9,60 +9,8 @@ const messages = {
 };
 
 const notImplemented = function (req, res, next) {
-    // CASE: user is logged in, allow
-    if (!req.api_key) {
-        return next();
-    }
-
-    if (req.query.god_mode) {
-        return next();
-    }
-
-    // @NOTE: integrations & staff tokens have limited access to the API
-    const allowlisted = {
-        site: ['GET'],
-        posts: ['GET', 'PUT', 'DELETE', 'POST'],
-        pages: ['GET', 'PUT', 'DELETE', 'POST'],
-        images: ['POST'],
-        webhooks: ['POST', 'PUT', 'DELETE'],
-        actions: ['GET'],
-        tags: ['GET', 'PUT', 'DELETE', 'POST'],
-        labels: ['GET', 'PUT', 'DELETE', 'POST'],
-        users: ['GET'],
-        roles: ['GET'],
-        invites: ['POST'],
-        themes: ['POST', 'PUT'],
-        members: ['GET', 'PUT', 'DELETE', 'POST'],
-        tiers: ['GET', 'PUT', 'POST'],
-        offers: ['GET', 'PUT', 'POST'],
-        newsletters: ['GET', 'PUT', 'POST'],
-        config: ['GET'],
-        explore: ['GET'],
-        schedules: ['PUT'],
-        files: ['POST'],
-        media: ['POST'],
-        db: ['POST'],
-        settings: ['GET'],
-        oembed: ['GET']
-    };
-
-    const match = req.url.match(/^\/(\w+)\/?/);
-
-    if (match) {
-        const entity = match[1];
-
-        if (allowlisted[entity] && allowlisted[entity].includes(req.method)) {
-            return next();
-        }
-    }
-
-    next(new errors.InternalServerError({
-        errorType: 'NotImplementedError',
-        message: tpl(messages.notImplemented),
-        statusCode: '501'
-    }));
+    next();
 };
-
 /**
  * Authentication for private endpoints
  */
