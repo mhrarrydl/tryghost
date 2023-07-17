@@ -35,7 +35,16 @@ module.exports = class ProtoRouter {
 
         // CASE: the default unmovable archive page
         if (req.path === '/archive/') {
-            let posts = await this.api.posts.browse({limit: 15, formats: ['html']});
+            const apiOptions = {
+                limit: 15,
+                formats: ['html']
+            };
+
+            if (req.query.tag) {
+                apiOptions.filter = `tag:${req.query.tag}`;
+            }
+
+            let posts = await this.api.posts.browse(apiOptions);
 
             posts.posts.forEach((post) => {
                 post.url = `${this.config.getSiteUrl()}${post.slug}-${post.id}/`;
