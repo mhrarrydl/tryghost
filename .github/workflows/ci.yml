@@ -755,7 +755,23 @@ jobs:
       [
         job_get_metadata
       ]
-    if: needs.job_get_metadata.outputs.is_canary_branch == 'true'
     name: Canary
-    secrets: inherit
-    uses: tryghost/actions/.github/workflows/canary.yml@main
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Set env variables
+        if: needs.job_get_metadata.outputs.is_canary_branch == 'true'
+        run: |
+          echo "CANARY_BUILD_INPUTS={\"version\":\"canary-arch\",\"environment\":\"staging\"}" >> $GITHUB_ENV
+
+      - name: Invoke Docker container build
+        if: needs.job_get_metadata.outputs.is_canary_branch == 'true'
+        uses: aurelien-baudet/workflow-dispatch@v2
+        with:
+          token: ${{ secrets.CANARY_DOCKER_BUILD }}
+          workflow: .github/workflows/deploy.yml
+          ref: 'refs/heads/main'
+          repo: TryGhost/Ghost-Moya
+          inputs: ${{ env.CANARY_BUILD_INPUTS }}
+          wait-for-completion-timeout: 20m
+          wait-for-completion-interval: 20s
