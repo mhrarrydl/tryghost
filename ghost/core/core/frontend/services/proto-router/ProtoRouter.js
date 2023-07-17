@@ -44,6 +44,16 @@ module.exports = class ProtoRouter {
                 apiOptions.filter = `tag:${req.query.tag}`;
             }
 
+            if (req.query.author) {
+                const authorFilter = `author:${req.query.author}`;
+
+                if (apiOptions.filter) {
+                    apiOptions.filter = `${apiOptions.filter}+${authorFilter}`;
+                } else {
+                    apiOptions.filter = authorFilter;
+                }
+            }
+
             let posts = await this.api.posts.browse(apiOptions);
 
             posts.posts.forEach((post) => {
