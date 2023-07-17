@@ -155,7 +155,6 @@ module.exports = function setupSiteApp(routerConfig) {
         siteApp.set('router', router);
         siteApp.use(router.routeRequest.bind(router));
     } else {
-        siteApp.set('router', 'og');
         router = siteRoutes(routerConfig);
         Object.setPrototypeOf(SiteRouter, router);
 
