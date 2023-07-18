@@ -5473,10 +5473,10 @@
     "@storybook/types" "7.0.27"
     ts-dedent "^2.0.0"
 
-"@storybook/addon-styling@1.3.3":
-  version "1.3.3"
-  resolved "https://registry.yarnpkg.com/@storybook/addon-styling/-/addon-styling-1.3.3.tgz#7884bb0b3b4e86a0b961a2f812db0a06eb99d054"
-  integrity sha512-rCGgi7Z/2I772y3gcdqfbELKbBcaBIfNsymSaWLn0gcT5DTz2ALrrCGvTpUX7YkKk07dAWDSVFTK6V0rOzo6Hw==
+"@storybook/addon-styling@1.3.4":
+  version "1.3.4"
+  resolved "https://registry.yarnpkg.com/@storybook/addon-styling/-/addon-styling-1.3.4.tgz#954b42e707826018a9271a484bffeb6ce7b23ab4"
+  integrity sha512-JWZ5X9IEcqB5vr6nAgutIYBLT6SlRGfK/Z7kRaWIdvU7VDA0CQl8G1vA0nuKCERvZl9QPelv3CA+7D0H9G8uTA==
   dependencies:
     "@babel/template" "^7.20.7"
     "@babel/types" "^7.21.5"
@@ -6746,15 +6746,10 @@
   resolved "https://registry.yarnpkg.com/@tryghost/kg-card-factory/-/kg-card-factory-4.0.8.tgz#3799e256ce67f926ad5045a63c2c241b1b6ede5a"
   integrity sha512-mQNs5gw63U26HPsOtlZ8U3jmUHTRMWXECTjIaP1QKWGFcsbAZqNHIGDCbJSqskCqwsrdi8PibZckfYLKozYCCw==
 
-"@tryghost/kg-clean-basic-html@3.0.19":
-  version "3.0.19"
-  resolved "https://registry.yarnpkg.com/@tryghost/kg-clean-basic-html/-/kg-clean-basic-html-3.0.19.tgz#52c18089acfc56ac8a20f0048f5fb99c47c6b4b4"
-  integrity sha512-6mheKCHAD7TLvFl3BEOZpMenc5lv/+/k6rq49OCYBJISWIbW8SkyqG3Yqgu1BB4cSyMFsprGr7yuOTIHSJPREw==
-
-"@tryghost/kg-clean-basic-html@^3.0.17", "@tryghost/kg-clean-basic-html@^3.0.20":
-  version "3.0.20"
-  resolved "https://registry.yarnpkg.com/@tryghost/kg-clean-basic-html/-/kg-clean-basic-html-3.0.20.tgz#dffc432648eb67604f2f019ae6da62648e26883d"
-  integrity sha512-JEZuLqgNIL6CNdPf5CGBRf27Qzc/GpNRmYyf449XxtzK6sb9XOrsuNczY6dpjiJxkMSA/1Wtq7gkQmBX1xfdJg==
+"@tryghost/kg-clean-basic-html@3.0.21", "@tryghost/kg-clean-basic-html@^3.0.21":
+  version "3.0.21"
+  resolved "https://registry.yarnpkg.com/@tryghost/kg-clean-basic-html/-/kg-clean-basic-html-3.0.21.tgz#27f90937c2bbd2db6c51d879533179c517a44531"
+  integrity sha512-M3yfVtd3wo8GhOZI3s3OxT/y2susVtGfqiE/6v7o0GAxTTORil4zrAywkxkKfuHJzFd1Nq2ZYuwvQhhv6VlvNA==
 
 "@tryghost/kg-converters@0.0.7":
   version "0.0.7"
@@ -6781,12 +6776,12 @@
     lodash "^4.17.21"
     luxon "^3.0.0"
 
-"@tryghost/kg-default-nodes@0.1.7", "@tryghost/kg-default-nodes@^0.1.7":
-  version "0.1.7"
-  resolved "https://registry.yarnpkg.com/@tryghost/kg-default-nodes/-/kg-default-nodes-0.1.7.tgz#715f4c2bc8b6c44228a97c410ebb312d476673b8"
-  integrity sha512-O869lR+irVWEAj3XP+RPX4v+UYyH1HjlC/ZtFsjMnE5+vRg1SxFthPV/ZoVEeegCgIGs/UXfYsGHbl2ok4cWjg==
+"@tryghost/kg-default-nodes@0.1.8", "@tryghost/kg-default-nodes@^0.1.8":
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/@tryghost/kg-default-nodes/-/kg-default-nodes-0.1.8.tgz#3fb2b3f73f06dce05d078662de44a704b52e1254"
+  integrity sha512-vF5wT6elrxV5sGBNIxC+vXTnFFNXwwUlsrv75xFF0yfj6fqYTbz8R9fvhBK33WSl2f/2jER1+ArMoyFmYgRYiA==
   dependencies:
-    "@tryghost/kg-clean-basic-html" "^3.0.20"
+    "@tryghost/kg-clean-basic-html" "^3.0.21"
     "@tryghost/kg-markdown-html-renderer" "^6.0.8"
     html-minifier "^4.0.0"
     jsdom "^21.0.0"
@@ -6794,10 +6789,10 @@
     lodash "^4.17.21"
     luxon "^3.3.0"
 
-"@tryghost/kg-lexical-html-renderer@0.3.2":
-  version "0.3.2"
-  resolved "https://registry.yarnpkg.com/@tryghost/kg-lexical-html-renderer/-/kg-lexical-html-renderer-0.3.2.tgz#207e5220d667c5219834155ff562c17637983bd1"
-  integrity sha512-sGbSpb+Bs9wHA5/4J/xe7MZR/3hi9GMJ29OT2dl6PKstfohkoWFewx2ZQlFmbjneBp+Z0g+yWivvnkSC8Nkyvg==
+"@tryghost/kg-lexical-html-renderer@0.3.4":
+  version "0.3.4"
+  resolved "https://registry.yarnpkg.com/@tryghost/kg-lexical-html-renderer/-/kg-lexical-html-renderer-0.3.4.tgz#a347b9ca776996dfd123f679618276a6695afe85"
+  integrity sha512-NJin4vkBa+779hQuwWjf5ULsO197DPC84VTkmbHcPqoJeMS5cPCwGGS0hmKLMw0jmZaBVtK7iunXh495GhwpxQ==
   dependencies:
     "@lexical/clipboard" "^0.11.0"
     "@lexical/code" "^0.11.0"
@@ -6805,7 +6800,7 @@
     "@lexical/link" "^0.11.0"
     "@lexical/list" "^0.11.0"
     "@lexical/rich-text" "^0.11.0"
-    "@tryghost/kg-default-nodes" "^0.1.7"
+    "@tryghost/kg-default-nodes" "^0.1.8"
     jsdom "^22.1.0"
     lexical "^0.11.0"
     prettier "^2.7.1"
@@ -6834,19 +6829,12 @@
     mobiledoc-dom-renderer "^0.7.0"
     simple-dom "^1.4.0"
 
-"@tryghost/kg-parser-plugins@3.0.18":
-  version "3.0.18"
-  resolved "https://registry.yarnpkg.com/@tryghost/kg-parser-plugins/-/kg-parser-plugins-3.0.18.tgz#b5ec1db355c5f9668d140be4cbf9231b972d49b2"
-  integrity sha512-vF4uvT277iFNMHPZq2omvRyq/kDtZT7sTpd3iVWgKS5bxLDUwOghKFTzcBfeZrBcIOwDpnY411Ss4afQtIvhzg==
+"@tryghost/kg-parser-plugins@3.0.22", "@tryghost/kg-parser-plugins@^3.0.21":
+  version "3.0.22"
+  resolved "https://registry.yarnpkg.com/@tryghost/kg-parser-plugins/-/kg-parser-plugins-3.0.22.tgz#6c0c773080aeccb5f20fa51b11a543ce4a4dc56b"
+  integrity sha512-KPY1izG1Z14SzvIzFO3jdV24w8azbbpZpXylPH9xsnny0j5LP9iOkb96DyIFWw63CBTidmW6eic2c76dfC5j6Q==
   dependencies:
-    "@tryghost/kg-clean-basic-html" "^3.0.17"
-
-"@tryghost/kg-parser-plugins@^3.0.21":
-  version "3.0.21"
-  resolved "https://registry.yarnpkg.com/@tryghost/kg-parser-plugins/-/kg-parser-plugins-3.0.21.tgz#dd79cdbeb951096197e3288f401f3b3c9e8f41b7"
-  integrity sha512-JmZAsXdwEYPulvWTJ2ZYKU8j2Urab1OzPwQO9mG0RVJ9B1EHpjFO+eXK+bk46jgFIw2YV9iefADiUe19ugpC+w==
-  dependencies:
-    "@tryghost/kg-clean-basic-html" "^3.0.20"
+    "@tryghost/kg-clean-basic-html" "^3.0.21"
 
 "@tryghost/kg-simplemde@1.11.2":
   version "1.11.2"
@@ -18041,7 +18029,7 @@ glob@8.1.0, glob@^8.0.3, glob@^8.1.0:
     minimatch "^5.0.1"
     once "^1.3.0"
 
-glob@^10.0.0:
+glob@^10.0.0, glob@^10.2.5:
   version "10.3.3"
   resolved "https://registry.yarnpkg.com/glob/-/glob-10.3.3.tgz#8360a4ffdd6ed90df84aa8d52f21f452e86a123b"
   integrity sha512-92vPiMb/iqpmEgsOoIDvTjc50wf9CCCvMzsi6W0JLPeUKE8TWP1a73PgqSrqy7iAZxaSD1YdzU7QZR5LF51MJw==
@@ -27961,6 +27949,13 @@ rgba-regex@^1.0.0:
   resolved "https://registry.yarnpkg.com/rgba-regex/-/rgba-regex-1.0.0.tgz#43374e2e2ca0968b0ef1523460b7d730ff22eeb3"
   integrity sha512-zgn5OjNQXLUTdq8m17KdaicF6w89TZs8ZU8y0AYENIU6wG8GG6LLm0yLSiPY8DmaYmHdgRW8rnApjoT0fQRfMg==
 
+rimraf@5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-5.0.1.tgz#0881323ab94ad45fec7c0221f27ea1a142f3f0d0"
+  integrity sha512-OfFZdwtd3lZ+XZzYP/6gTACubwFcHdLRqS9UX3UwpU2dnGQYkPFISRwvM3w9IiB2w7bW5qGo/uAwE4SmXXSKvg==
+  dependencies:
+    glob "^10.2.5"
+
 rimraf@^2.2.8, rimraf@^2.3.4, rimraf@^2.4.3, rimraf@^2.5.3, rimraf@^2.5.4, rimraf@^2.6.1, rimraf@^2.6.2, rimraf@^2.6.3:
   version "2.7.1"
   resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-2.7.1.tgz#35797f13a7fdadc566142c29d4f07ccad483e3ec"
@@ -31539,20 +31534,20 @@ vite-node@0.33.0:
     picocolors "^1.0.0"
     vite "^3.0.0 || ^4.0.0"
 
-vite-plugin-commonjs@0.8.1:
-  version "0.8.1"
-  resolved "https://registry.yarnpkg.com/vite-plugin-commonjs/-/vite-plugin-commonjs-0.8.1.tgz#d59af4553428cf3681dae79191f1506fa6b6fa12"
-  integrity sha512-hL2wwqgSiLBcrmCH7z+H468Z9uyBnKXX5OAwoYmWd/i03PBGCqkOBR3rjeojyWOoGmWgDVB7lj6Xn5pVw3Fwyg==
+vite-plugin-commonjs@0.8.2:
+  version "0.8.2"
+  resolved "https://registry.yarnpkg.com/vite-plugin-commonjs/-/vite-plugin-commonjs-0.8.2.tgz#5e372da3f43774dd1ac0baa0f2f3018934f49831"
+  integrity sha512-UJlvuioutS7Tno3p3Dqxkr0G4xXt8ILYsJzOiyvFlEsyAxFRofsBGHN/Sl15q0Y4vtvvC7+QZCc6GuUxOM6Cmg==
   dependencies:
     acorn "^8.8.2"
     fast-glob "^3.2.12"
     magic-string "^0.30.1"
     vite-plugin-dynamic-import "^1.5.0"
 
-vite-plugin-css-injected-by-js@3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/vite-plugin-css-injected-by-js/-/vite-plugin-css-injected-by-js-3.2.0.tgz#0e0fa1de9281a918f9945bc6401b46f7d396d7f9"
-  integrity sha512-a6MtYm/qfswVCtLezzzKJWL2ZpxrXXQd6/1UHy0t/G0IILHl4GG6n4OprbcC93aXIwkeS19JNbuKWD0Xt+pZtg==
+vite-plugin-css-injected-by-js@3.2.1:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/vite-plugin-css-injected-by-js/-/vite-plugin-css-injected-by-js-3.2.1.tgz#c23e10e28a1afb78414fa3c162ac8a253cd1a6a4"
+  integrity sha512-8UQWy7tcmgwkaUKYfbj/8GOeAD0RPG2tdetAGg7WikWC8IEtNrovs8RRuLjFqdRqORT1XxchBB5tPl6xO/H95g==
 
 vite-plugin-dynamic-import@^1.5.0:
   version "1.5.0"
