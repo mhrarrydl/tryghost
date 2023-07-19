@@ -21,13 +21,13 @@ module.exports = class ProtoRouter {
         let baseUrl = this.baseUrl();
 
         if (checks.isPost(data)) {
-            baseUrl = this.urlUtils.urlJoin(baseUrl, `/${data.slug}-${data.id}/`);
+            return this.urlUtils.urlJoin(baseUrl, `/${data.slug}-${data.id}/`);
         } else if (checks.isNav(data)) {
-            baseUrl = this.urlUtils.urlJoin(baseUrl, `/${data.url}/`);
+            return this.urlUtils.urlJoin(baseUrl, `/${data.url}/`);
         } else if (checks.isTag(data)) {
-            baseUrl = this.urlUtils.urlJoin(baseUrl, `/archive/?tag=${data.slug}/`);
+            return this.urlUtils.urlJoin(baseUrl, `/archive/?tag=${data.slug}/`);
         } else if (checks.isUser(data)) {
-            baseUrl = this.urlUtils.urlJoin(baseUrl, `/archive/?author=${data.slug}/`);
+            return this.urlUtils.urlJoin(baseUrl, `/archive/?author=${data.slug}/`);
         }
 
         return baseUrl;
