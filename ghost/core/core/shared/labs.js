@@ -40,6 +40,7 @@ const ALPHA_FEATURES = [
     'adminXSettings',
     'pageImprovements',
     'flatUrls',
+    'hardcoreRouter',
     'mailEvents',
     'collectionsCard',
     'headerUpgrade'
