@@ -28,6 +28,8 @@ module.exports = class ProtoRouter {
             return this.urlUtils.urlJoin(baseUrl, `/archive/?tag=${data.slug}/`);
         } else if (checks.isUser(data)) {
             return this.urlUtils.urlJoin(baseUrl, `/archive/?author=${data.slug}/`);
+        } else if (checks.isCollection(data)) {
+            return this.urlUtils.urlJoin(baseUrl, `/${data.slug}/`);
         }
 
         return baseUrl;

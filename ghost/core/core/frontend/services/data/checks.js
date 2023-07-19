@@ -18,9 +18,16 @@ function isNav(jsonData) {
     Object.prototype.hasOwnProperty.call(jsonData, 'slug') && Object.prototype.hasOwnProperty.call(jsonData, 'current');
 }
 
+function isCollection(jsonData) {
+    return Object.prototype.hasOwnProperty.call(jsonData, 'type') &&
+        Object.prototype.hasOwnProperty.call(jsonData, 'slug') &&
+        Object.prototype.hasOwnProperty.call(jsonData, 'filter');
+}
+
 module.exports = {
     isPost,
     isTag,
     isUser,
-    isNav
+    isNav,
+    isCollection
 };
