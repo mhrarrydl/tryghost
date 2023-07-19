@@ -41,12 +41,14 @@ module.exports = class ProtoRouter {
             path: req.path
         };
 
+        let baseUrl = this.baseUrl();
+
         function unknown() {
             response.data = {};
             response.type = 'unknown';
             response.template = 'unknown';
 
-            const html = `<h1>Unknown route</h1><div><pre>${JSON.stringify(response, null, 2)}</pre></div><div><p>Visit <a href="${this.baseUrl()}archive/">/archive/</a> to see a list of posts.</p></div>`;
+            const html = `<h1>Unknown route</h1><div><pre>${JSON.stringify(response, null, 2)}</pre></div><div><p>Visit <a href="${baseUrl}archive/">/archive/</a> to see a list of posts.</p></div>`;
 
             res.status(404).send(html);
             debug('response', response);
