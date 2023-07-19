@@ -18,6 +18,7 @@ const customRedirects = require('../../server/services/custom-redirects');
 const linkRedirects = require('../../server/services/link-redirection');
 const siteRoutes = require('./routes');
 const shared = require('../../server/web/shared');
+const labs = require('../../shared/labs');
 const errorHandler = require('@tryghost/mw-error-handler');
 const mw = require('./middleware');
 
@@ -149,9 +150,14 @@ module.exports = function setupSiteApp(routerConfig) {
     debug('General middleware done');
 
     if (routerConfig.newRouter) {
-        const {api, ProtoRouter} = routerConfig.newRouter;
+        const {api, ProtoRouter, HardcoreRouter} = routerConfig.newRouter;
+
         // This will likely look very different, it's just prototype code to inject new routing logic for now
-        router = new ProtoRouter({express, config, urlUtils, api});
+        if (labs.isSet('hardcoreRouter')) {
+            router = new HardcoreRouter({express, config, urlUtils, api});
+        } else {
+            router = new ProtoRouter({express, config, urlUtils, api});
+        }
         siteApp.set('router', router);
         siteApp.use(router.routeRequest.bind(router));
     } else {
