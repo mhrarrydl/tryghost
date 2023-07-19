@@ -91,7 +91,10 @@ module.exports = class ProtoRouter {
             };
 
             rendering.renderer(req, res, posts);
-        } else if (SLUG_REGEX.test(req.path)) { // CASE: a slug - possibly a collection
+            return;
+        }
+
+        if (SLUG_REGEX.test(req.path)) { // CASE: a slug - possibly a collection
             const [match, slug] = req.path.match(SLUG_REGEX) || [false];
             if (!match) {
                 return unknown();
@@ -103,26 +106,29 @@ module.exports = class ProtoRouter {
                 if (!result) {
                     return unknown();
                 }
+
+                let posts = await this.api.posts.browse({collection: result.collections[0].id});
+
+                posts.posts.forEach((post) => {
+                    post.url = `${this.config.getSiteUrl()}${post.slug}-${post.id}/`;
+                });
+
+                response.data = posts;
+                response.data.pagination = posts.meta.pagination;
+                response.type = 'archive';
+
+                res.routerOptions = {
+                    type: 'channel'
+                };
+
+                rendering.renderer(req, res, posts);
+                return;
             } catch (err) {
-                return unknown();
+                debug(err);
             }
+        }
 
-            let posts = await this.api.posts.browse({collection: result.collections[0].id});
-
-            posts.posts.forEach((post) => {
-                post.url = `${this.config.getSiteUrl()}${post.slug}-${post.id}/`;
-            });
-
-            response.data = posts;
-            response.data.pagination = posts.meta.pagination;
-            response.type = 'archive';
-
-            res.routerOptions = {
-                type: 'channel'
-            };
-
-            rendering.renderer(req, res, posts);
-        } else if (/^\/[a-z0-9-]+-[0-9a-f]{24}\/$/.test(req.path)) { // CASE: a post!
+        if (/^\/[a-z0-9-]+-[0-9a-f]{24}\/$/.test(req.path)) { // CASE: a post!
             // Deal with routing
             let match = req.path.match(/^\/([a-z0-9-])+-([0-9a-f]{24})\/$/);
             let id = match[2];
