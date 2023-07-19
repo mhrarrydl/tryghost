@@ -96,8 +96,14 @@ module.exports = class ProtoRouter {
             if (!match) {
                 return unknown();
             }
-            const result = await this.api.collections.read({slug});
-            if (!result) {
+
+            let result;
+            try {
+                result = await this.api.collections.read({slug});
+                if (!result) {
+                    return unknown();
+                }
+            } catch (err) {
                 return unknown();
             }
 
