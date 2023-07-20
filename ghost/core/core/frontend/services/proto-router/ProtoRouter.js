@@ -76,13 +76,13 @@ module.exports = class ProtoRouter {
             };
         }
 
-        async function getCollection(slug) {
+        const getCollection = async (slug) => {
             try {
                 return await this.api.collections.read({slug});
             } catch (err) {
                 return null;
             }
-        }
+        };
 
         // CASE: a slug - possibly a collection
         const [matchesSlug, collectionSlug] = url.pathname.match(SLUG_REGEX) || [false];
