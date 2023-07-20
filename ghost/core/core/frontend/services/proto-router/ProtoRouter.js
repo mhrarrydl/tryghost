@@ -62,10 +62,6 @@ module.exports = class ProtoRouter {
 
             let posts = await this.api.posts.browse(apiOptions);
 
-            posts.posts.forEach((post) => {
-                post.url = `${this.config.getSiteUrl()}${post.slug}-${post.id}/`;
-            });
-
             const data = posts;
             data.pagination = posts.meta.pagination;
 
@@ -90,10 +86,6 @@ module.exports = class ProtoRouter {
             const result = await getCollection(collectionSlug);
             if (result) {
                 let posts = await this.api.posts.browse({collection: result.collections[0].id});
-
-                posts.posts.forEach((post) => {
-                    post.url = `${this.config.getSiteUrl()}${post.slug}-${post.id}/`;
-                });
 
                 const data = posts;
                 data.pagination = posts.meta.pagination;
@@ -149,6 +141,20 @@ module.exports = class ProtoRouter {
             res.status(404).send(html);
         } else {
             response.data = data;
+
+            if (data.posts) {
+                response.data.posts = data.posts.map((post) => {
+                    return {
+                        ...post,
+                        url: this.urlFor(post)
+                    };
+                });
+            } else if (data.post) {
+                response.data.post = {
+                    ...data.post,
+                    url: this.urlFor(data.post)
+                };
+            }
             response.type = type;
 
             res.routerOptions = {
