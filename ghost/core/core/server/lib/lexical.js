@@ -2,6 +2,9 @@ const path = require('path');
 const urlUtils = require('../../shared/url-utils');
 const config = require('../../shared/config');
 const storage = require('../adapters/storage');
+const getPostServiceInstance = require('../services/posts/posts-service');
+
+const postsService = getPostServiceInstance();
 
 let nodes;
 let lexicalHtmlRenderer;
@@ -27,6 +30,12 @@ module.exports = {
     },
 
     async render(lexical, userOptions = {}) {
+        const getCollectionPosts = async (collectionSlug) => {
+            const response = await postsService.browsePosts({collection: collectionSlug, limit: 12});
+            console.log(`response`,response);
+            return response;
+        };
+
         const options = Object.assign({
             siteUrl: config.get('url'),
             imageOptimization: config.get('imageOptimization'),
@@ -42,8 +51,11 @@ module.exports = {
             createDocument() {
                 const {JSDOM} = require('jsdom');
                 return (new JSDOM()).window.document;
-            }
+            },
+            getCollectionPosts
         }, userOptions);
+
+        getCollectionPosts('latest');
 
         return await this.lexicalHtmlRenderer.render(lexical, options);
     },
