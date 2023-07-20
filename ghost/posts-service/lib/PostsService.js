@@ -49,6 +49,9 @@ class PostsService {
             }
 
             const postIds = collection.posts;
+            if (postIds.length === 0) {
+                postIds.push('null');
+            }
             options.filter = `id:[${postIds.join(',')}]+type:post`;
             posts = await this.models.Post.findPage(options);
         } else {
