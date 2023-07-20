@@ -85,7 +85,10 @@ module.exports = class ProtoRouter {
         if (matchesSlug) {
             const result = await getCollection(collectionSlug);
             if (result) {
-                let posts = await this.api.posts.browse({collection: result.collections[0].id});
+                let posts = await this.api.posts.browse({
+                    collection: result.collections[0].id,
+                    formats: ['html']
+                });
 
                 const data = posts;
                 data.pagination = posts.meta.pagination;
