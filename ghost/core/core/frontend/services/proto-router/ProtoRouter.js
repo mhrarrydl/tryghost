@@ -35,39 +35,23 @@ module.exports = class ProtoRouter {
         return baseUrl;
     }
 
-    async routeRequest(req, res, next) {
-        let response = {
-            router: 'ProtoRouter',
-            path: req.path
-        };
-
-        let baseUrl = this.baseUrl();
-
-        function unknown() {
-            response.data = {};
-            response.type = 'unknown';
-            response.template = 'unknown';
-
-            const html = `<h1>Unknown route</h1><div><pre>${JSON.stringify(response, null, 2)}</pre></div><div><p>Visit <a href="${baseUrl}archive/">/archive/</a> to see a list of posts.</p></div>`;
-
-            res.status(404).send(html);
-            debug('response', response);
-            debug('routerOptions', res.routerOptions);
-        }
-
-        // CASE: the default unmovable archive page
-        if (req.path === '/archive/') {
+    /**
+     * @param {URL} url
+     */
+    async getDataForUrl(url) {
+        // CASE: Hardcoded archive URL
+        if (url.pathname === '/archive/') {
             const apiOptions = {
                 limit: 15,
                 formats: ['html']
             };
 
-            if (req.query.tag) {
-                apiOptions.filter = `tag:${req.query.tag}`;
+            if (url.searchParams.get('tag')) {
+                apiOptions.filter = `tag:${url.searchParams.get('tag')}`;
             }
 
-            if (req.query.author) {
-                const authorFilter = `author:${req.query.author}`;
+            if (url.searchParams.get('author')) {
+                const authorFilter = `author:${url.searchParams.get('author')}`;
 
                 if (apiOptions.filter) {
                     apiOptions.filter = `${apiOptions.filter}+${authorFilter}`;
@@ -82,71 +66,96 @@ module.exports = class ProtoRouter {
                 post.url = `${this.config.getSiteUrl()}${post.slug}-${post.id}/`;
             });
 
-            response.data = posts;
-            response.data.pagination = posts.meta.pagination;
-            response.type = 'archive';
+            const data = posts;
+            data.pagination = posts.meta.pagination;
 
-            res.routerOptions = {
-                type: 'channel'
+            return {
+                data,
+                type: 'archive',
+                routerType: 'channel'
             };
-
-            rendering.renderer(req, res, posts);
-            return;
         }
 
-        if (SLUG_REGEX.test(req.path)) { // CASE: a slug - possibly a collection
-            const [match, slug] = req.path.match(SLUG_REGEX) || [false];
-            if (!match) {
-                return unknown();
-            }
-
-            let result;
+        async function getCollection(slug) {
             try {
-                result = await this.api.collections.read({slug});
-                if (!result) {
-                    return unknown();
-                }
+                return await this.api.collections.read({slug});
+            } catch (err) {
+                return null;
+            }
+        }
 
+        // CASE: a slug - possibly a collection
+        const [matchesSlug, collectionSlug] = url.pathname.match(SLUG_REGEX) || [false];
+        if (matchesSlug) {
+            const result = await getCollection(collectionSlug);
+            if (result) {
                 let posts = await this.api.posts.browse({collection: result.collections[0].id});
 
                 posts.posts.forEach((post) => {
                     post.url = `${this.config.getSiteUrl()}${post.slug}-${post.id}/`;
                 });
 
-                response.data = posts;
-                response.data.pagination = posts.meta.pagination;
-                response.type = 'archive';
+                const data = posts;
+                data.pagination = posts.meta.pagination;
 
-                res.routerOptions = {
-                    type: 'channel'
+                return {
+                    data,
+                    type: 'archive',
+                    routerType: 'channel'
                 };
-
-                rendering.renderer(req, res, posts);
-                return;
-            } catch (err) {
-                debug(err);
             }
         }
 
-        if (/^\/[a-z0-9-]+-[0-9a-f]{24}\/$/.test(req.path)) { // CASE: a post!
-            // Deal with routing
-            let match = req.path.match(/^\/([a-z0-9-])+-([0-9a-f]{24})\/$/);
-            let id = match[2];
-
-            // Deal with matching formats
+        // CASE: Slug & ID combo - a post :)
+        const [matchesSlugIdCombo, postSlug, id] = url.pathname.match(/^\/([a-z0-9-])+-([0-9a-f]{24})\/$/) || [false];
+        if (matchesSlugIdCombo) {
             let {posts} = await this.api.posts.read({id: id, formats: ['html']});
             let post = posts[0];
 
-            response.data = {post};
-            response.type = 'entry';
+            return {
+                data: {post},
+                type: 'entry',
+                routerType: 'entry'
+            };
+        }
+
+        return null;
+    }
+
+    /**
+     * @param {import('express').Request} req
+     * @param {import('express').Response} res
+     * @param {import('express').NextFunction} next
+     */
+    async routeRequest(req, res, next) {
+        let response = {
+            router: 'ProtoRouter',
+            path: req.path
+        };
+
+        let baseUrl = this.baseUrl();
+
+        const url = new URL(req.url, baseUrl);
+
+        const {data, type, routerType} = await this.getDataForUrl(url) || {};
+
+        if (!data) {
+            response.data = {};
+            response.type = 'unknown';
+            response.template = 'unknown';
+
+            const html = `<h1>Unknown route</h1><div><pre>${JSON.stringify(response, null, 2)}</pre></div><div><p>Visit <a href="${baseUrl}archive/">/archive/</a> to see a list of posts.</p></div>`;
+
+            res.status(404).send(html);
+        } else {
+            response.data = data;
+            response.type = type;
 
             res.routerOptions = {
-                type: 'entry'
+                type: routerType
             };
 
             rendering.renderer(req, res, response.data);
-        } else {
-            unknown();
         }
 
         debug('response', response);
