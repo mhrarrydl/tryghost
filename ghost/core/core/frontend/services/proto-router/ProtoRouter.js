@@ -128,6 +128,21 @@ module.exports = class ProtoRouter {
             path: req.path
         };
 
+        if (req.path === '/') {
+            response.data = {};
+            response.type = 'static';
+            response.template = 'custom-homepage';
+
+            res.routerOptions = {
+                type: 'custom',
+                defaultTemplate: 'homepage',
+                templates: ['homepage']
+            };
+
+            rendering.renderer(req, res, response.data);
+            return;
+        }
+
         let baseUrl = this.baseUrl();
 
         const url = new URL(req.url, baseUrl);
