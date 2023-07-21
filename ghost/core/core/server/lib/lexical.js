@@ -32,8 +32,19 @@ module.exports = {
     async render(lexical, userOptions = {}) {
         const getCollectionPosts = async (collectionSlug) => {
             const response = await postsService.browsePosts({collection: collectionSlug, limit: 12});
-            console.log(`response`,response);
-            return response;
+            const posts = response.data.map((post) => {
+                return {
+                    id: post.get('id'),
+                    title: post.get('title'),
+                    slug: post.get('slug'),
+                    url: post.get('url'),
+                    excerpt: post.get('excerpt'),
+                    feature_image: post.get('feature_image'),
+                    published_at: post.get('published_at'),
+                    primary_author: post.get('primary_author')
+                };
+            });
+            return posts;
         };
 
         const options = Object.assign({
