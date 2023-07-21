@@ -1,6 +1,6 @@
 {
   "name": "ghost",
-  "version": "5.54.3",
+  "version": "5.54.4",
   "description": "The professional publishing platform",
   "author": "Ghost Foundation",
   "homepage": "https://ghost.org",
@@ -60,7 +60,7 @@
   },
   "dependencies": {
     "@extractus/oembed-extractor": "3.2.1",
-    "@sentry/node": "7.58.1",
+    "@sentry/node": "7.59.3",
     "@tryghost/adapter-base-cache": "0.1.5",
     "@tryghost/adapter-cache-redis": "0.0.0",
     "@tryghost/adapter-manager": "0.0.0",
@@ -102,8 +102,8 @@
     "@tryghost/kg-card-factory": "4.0.8",
     "@tryghost/kg-default-atoms": "4.0.1",
     "@tryghost/kg-default-cards": "9.1.0",
-    "@tryghost/kg-default-nodes": "0.1.8",
-    "@tryghost/kg-lexical-html-renderer": "0.3.4",
+    "@tryghost/kg-default-nodes": "0.1.10",
+    "@tryghost/kg-lexical-html-renderer": "0.3.6",
     "@tryghost/kg-mobiledoc-html-renderer": "6.0.8",
     "@tryghost/limit-service": "1.2.6",
     "@tryghost/link-redirects": "0.0.0",
@@ -266,6 +266,7 @@
     "targets": {
       "archive": {
         "dependsOn": [
+          "build",
           "^build:ts",
           {
             "projects": [

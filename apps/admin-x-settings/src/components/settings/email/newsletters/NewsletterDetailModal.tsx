@@ -1,10 +1,12 @@
 import Form from '../../../../admin-x-ds/global/form/Form';
 import NiceModal from '@ebay/nice-modal-react';
 
+import ButtonGroup from '../../../../admin-x-ds/global/ButtonGroup';
 import Heading from '../../../../admin-x-ds/global/Heading';
 import Hint from '../../../../admin-x-ds/global/Hint';
 import Icon from '../../../../admin-x-ds/global/Icon';
 import ImageUpload from '../../../../admin-x-ds/global/form/ImageUpload';
+import NewsletterPreview from './NewsletterPreview';
 import React, {useState} from 'react';
 import Select, {SelectOption} from '../../../../admin-x-ds/global/form/Select';
 import StickyFooter from '../../../../admin-x-ds/global/StickyFooter';
@@ -40,7 +42,7 @@ const Sidebar: React.FC = () => {
     const tabs: Tab[] = [
         {
             id: 'generalSettings',
-            title: 'General settings',
+            title: 'General',
             contents: <Form gap="sm" marginTop>
                 <Heading className="mt-5" level={5}>Name and description</Heading>
                 <TextField placeholder="Weekly Roundup" title="Name"></TextField>
@@ -88,44 +90,76 @@ const Sidebar: React.FC = () => {
                     </div>
                 </div>
                 <Toggle
+                    direction="rtl"
                     label='Publication title'
                     labelStyle='value'
                 />
                 <Toggle
+                    direction="rtl"
                     label='Newsletter name'
                     labelStyle='value'
                 />
 
                 <Heading className="mt-5" level={5}>Body</Heading>
                 <Toggle
-                    label='Post title'
-                    labelStyle='value'
+                    direction="rtl"
+                    label='Title'
+                    labelStyle='heading'
                 />
-                <Select options={selectOptions} title="Title style" onSelect={(value: string) => {
+                <Select containerClassName="-mt-[16px]" options={selectOptions} onSelect={(value: string) => {
                     alert(value);
                 }}/>
+                <div className="flex items-end">
+                    <div className="w-full pr-4">
+                        <Select containerClassName="" options={selectOptions} title="Body style" onSelect={(value: string) => {
+                            alert(value);
+                        }}/>
+                    </div>
+                    <ButtonGroup buttons={[
+                        {
+                            icon: 'align-left',
+                            label: 'Align left',
+                            hideLabel: true,
+                            link: false,
+                            size: 'sm',
+                            iconColorClass: 'text-grey-500'
+                        },
+                        {
+                            icon: 'align-center',
+                            label: 'Align center',
+                            hideLabel: true,
+                            link: false,
+                            size: 'sm',
+                            iconColorClass: 'text-grey-900'
+                        }
+                    ]}
+                    className="mb-1 !gap-0"
+                    />
+                </div>
                 <Toggle
+                    direction="rtl"
                     label='Feature image'
                     labelStyle='value'
                 />
-                <Select options={selectOptions} title="Body style" onSelect={(value: string) => {
-                    alert(value);
-                }}/>
 
                 <Heading className="mt-5" level={5}>Footer</Heading>
                 <Toggle
+                    direction="rtl"
                     label='Ask your readers for feedback'
                     labelStyle='value'
                 />
                 <Toggle
+                    direction="rtl"
                     label='Add a link to your comments'
                     labelStyle='value'
                 />
                 <Toggle
+                    direction="rtl"
                     label='Share your latest posts'
                     labelStyle='value'
                 />
                 <Toggle
+                    direction="rtl"
                     label='Show subscription details'
                     labelStyle='value'
                 />
@@ -146,7 +180,7 @@ const Sidebar: React.FC = () => {
             <StickyFooter height={96}>
                 <div className='flex w-full items-start px-7'>
                     <span>
-                        <Icon className='mr-2' colorClass='text-red' name='heart'/>
+                        <Icon className='-mt-[1px] mr-2' colorClass='text-red' name='heart'/>
                     </span>
                     <Form marginBottom={false}>
                         <Toggle
@@ -163,38 +197,22 @@ const Sidebar: React.FC = () => {
     );
 };
 
+const preview = <NewsletterPreview/>;
+
 const NewsletterDetailModal: React.FC<NewsletterDetailModalProps> = () => {
     const sidebar = <Sidebar/>;
 
     return <PreviewModalContent
         deviceSelector={false}
         okLabel={'Save & close'}
-        preview={'Newsletter preview goes here TBD'}
+        preview={preview}
         previewBgColor={'grey'}
+        previewToolbar={false}
         sidebar={sidebar}
         sidebarPadding={false}
         testId='newsletter-modal'
         title='Newsletter'
     />;
-    // return <Modal
-    //     afterClose={() => {
-    //         updateRoute('tiers');
-    //     }}
-    //     okLabel='Save & close'
-    //     size='lg'
-    //     title='Tier'
-    //     stickyFooter>
-    //     <div className='mt-5 flex items-start'>
-    //         <div className='grow'>
-    //             <Form>
-    //                 Tier form
-    //             </Form>
-    //         </div>
-    //         {/* <div className='sticky top-[77px] shrink-0 basis-[380px]'>
-    //             <NewsletterDetailPreview />
-    //         </div> */}
-    //     </div>
-    // </Modal>;
 };
 
 export default NiceModal.create(NewsletterDetailModal);
