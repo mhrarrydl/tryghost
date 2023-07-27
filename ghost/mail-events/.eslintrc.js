@@ -1,13 +1,10 @@
 module.exports = {
-    parser: '@typescript-eslint/parser',
-    plugins: ['ghost', '@typescript-eslint'],
+    plugins: ['ghost'],
     extends: [
-        'plugin:ghost/node'
+        'plugin:ghost/ts'
     ],
     rules: {
-        'no-unused-vars': 'off',
-        '@typescript-eslint/no-unused-vars': ['error'],
-        'no-shadow': 'off',
-        '@typescript-eslint/no-shadow': ['error']
+        // TODO: fix + remove this
+        '@typescript-eslint/no-explicit-any': 'warn',
     }
 };

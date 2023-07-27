@@ -1,6 +1,6 @@
 {
   "name": "ghost-admin",
-  "version": "5.54.4",
+  "version": "5.55.2",
   "description": "Ember.js admin client for Ghost",
   "author": "Ghost Foundation",
   "homepage": "http://ghost.org",
@@ -36,11 +36,11 @@
     "@ember/optional-features": "2.0.0",
     "@ember/render-modifiers": "2.1.0",
     "@ember/test-helpers": "2.9.4",
-    "@embroider/macros": "1.12.3",
+    "@embroider/macros": "1.13.0",
     "@glimmer/component": "1.1.2",
     "@html-next/vertical-collection": "3.0.0",
     "@joeattardi/emoji-button": "4.6.4",
-    "@sentry/ember": "7.60.0",
+    "@sentry/ember": "7.60.1",
     "@tryghost/color-utils": "0.1.24",
     "@tryghost/ember-promise-modals": "2.0.1",
     "@tryghost/helpers": "1.1.77",
@@ -52,6 +52,7 @@
     "@tryghost/members-csv": "0.0.0",
     "@tryghost/mobiledoc-kit": "0.12.5-ghost.2",
     "@tryghost/nql": "0.11.0",
+    "@tryghost/nql-filter-expansions": "0.0.0",
     "@tryghost/nql-lang": "0.5.0",
     "@tryghost/string": "0.2.4",
     "@tryghost/timezone-data": "0.3.0",
@@ -88,7 +89,7 @@
     "ember-cli-shims": "1.2.0",
     "ember-cli-string-helpers": "6.1.0",
     "ember-cli-terser": "4.0.2",
-    "ember-cli-test-loader": "3.0.0",
+    "ember-cli-test-loader": "3.1.0",
     "ember-composable-helpers": "5.0.0",
     "ember-concurrency": "2.3.7",
     "ember-could-get-used-to-this": "1.0.1",
@@ -121,9 +122,7 @@
     "ember-tooltips": "3.6.0",
     "ember-truth-helpers": "3.1.1",
     "ember-websockets": "10.2.1",
-    "eslint": "8.44.0",
     "eslint-plugin-babel": "5.3.1",
-    "eslint-plugin-react": "7.32.2",
     "faker": "5.5.3",
     "fs-extra": "11.1.1",
     "glob": "8.1.0",
@@ -182,6 +181,6 @@
   "dependencies": {
     "jose": "4.14.4",
     "path-browserify": "1.0.1",
-    "webpack": "5.88.1"
+    "webpack": "5.88.2"
   }
 }

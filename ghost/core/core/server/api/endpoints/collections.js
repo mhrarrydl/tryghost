@@ -17,8 +17,16 @@ module.exports = {
             'limit',
             'order',
             'page',
-            'filter'
+            'filter',
+            'include'
         ],
+        validation: {
+            options: {
+                include: {
+                    values: ['count.posts']
+                }
+            }
+        },
         permissions: true,
         query(frame) {
             return collectionsService.api.getAll(frame.options);
@@ -29,16 +37,36 @@ module.exports = {
         headers: {
             cacheInvalidate: false
         },
+<<<<<<< HEAD
+        data: [
+            'id',
+            'slug'
+=======
+        options: [
+            'include'
+>>>>>>> main
+        ],
         data: [
             'id',
             'slug'
         ],
+        validation: {
+            options: {
+                include: {
+                    values: ['count.posts']
+                }
+            }
+        },
         permissions: true,
         async query(frame) {
             let model;
             if (frame.data.id) {
                 model = await collectionsService.api.getById(frame.data.id);
+<<<<<<< HEAD
             } else if (frame.data.slug) {
+=======
+            } else {
+>>>>>>> main
                 model = await collectionsService.api.getBySlug(frame.data.slug);
             }
 

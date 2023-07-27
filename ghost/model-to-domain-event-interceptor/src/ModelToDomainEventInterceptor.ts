@@ -1,8 +1,4 @@
-const {
-    PostDeletedEvent,
-    PostAddedEvent,
-    PostEditedEvent
-} = require('@tryghost/collections');
+import { PostDeletedEvent, PostAddedEvent, PostEditedEvent, TagDeletedEvent } from '@tryghost/collections';
 
 type ModelToDomainEventInterceptorDeps = {
     ModelEvents: {
@@ -29,7 +25,8 @@ export class ModelToDomainEventInterceptor {
             'post.deleted',
             'post.edited',
             // NOTE: currently unmapped and unused event
-            'tag.added'
+            'tag.added',
+            'tag.deleted'
         ];
 
         for (const modelEventName of ghostModelUpdateEvents) {
@@ -69,7 +66,9 @@ export class ModelToDomainEventInterceptor {
                     status: data.attributes.status,
                     featured: data.attributes.featured,
                     published_at: data.attributes.published_at,
-                    tags: data.relations?.tags?.models.map((tag: any) => (tag.get('slug')))
+                    tags: data.relations?.tags?.models.map((tag: any) => ({
+                        slug: tag.get('slug')
+                    }))
                 },
                 // @NOTE: this will need to represent the previous state of the post
                 //        will be needed to optimize the query for the collection
@@ -79,9 +78,14 @@ export class ModelToDomainEventInterceptor {
                     status: data._previousAttributes?.status,
                     featured: data._previousAttributes?.featured,
                     published_at: data._previousAttributes?.published_at,
-                    tags: data._previousRelations?.tags?.models.map((tag: any) => (tag.get('slug')))
+                    tags: data._previousRelations?.tags?.models.map((tag: any) => ({
+                        slug: tag.get('slug')
+                    }))
                 }
             });
+            break;
+        case 'tag.deleted':
+            event = TagDeletedEvent.create({id: data.id, slug: data.attributes.slug});
             break;
         default:
         }

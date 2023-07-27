@@ -121,11 +121,14 @@
   },
   "devDependencies": {
     "concurrently": "8.2.0",
-    "eslint-plugin-ghost": "3.2.0",
+    "eslint": "8.44.0",
+    "eslint-plugin-ghost": "3.3.0",
+    "eslint-plugin-react": "7.33.0",
     "husky": "8.0.3",
     "lint-staged": "13.2.3",
-    "nx": "16.5.3",
+    "nx": "16.5.5",
     "rimraf": "5.0.1",
-    "ts-node": "10.9.1"
+    "ts-node": "10.9.1",
+    "typescript": "5.1.6"
   }
 }

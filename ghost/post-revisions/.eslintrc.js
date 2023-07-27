@@ -1,7 +1,9 @@
 module.exports = {
-    parser: '@typescript-eslint/parser',
     plugins: ['ghost'],
     extends: [
-        'plugin:ghost/node'
-    ]
+        'plugin:ghost/ts'
+    ],
+    rules: {
+        '@typescript-eslint/no-explicit-any': 'warn',
+    }
 };

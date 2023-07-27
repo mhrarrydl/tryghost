@@ -1,6 +1,6 @@
 {
   "name": "@tryghost/portal",
-  "version": "2.33.7",
+  "version": "2.33.8",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -31,15 +31,32 @@
     "prepublishOnly": "yarn build"
   },
   "eslintConfig": {
+    "env": {
+      "browser": true,
+      "jest": true
+    },
+    "parserOptions": {
+      "sourceType": "module",
+      "ecmaVersion": 2022
+    },
     "extends": [
-      "react-app",
       "plugin:ghost/browser",
-      "plugin:i18next/recommended"
+      "plugin:i18next/recommended",
+      "plugin:react/recommended",
+      "plugin:react/jsx-runtime"
     ],
     "plugins": [
       "ghost",
       "i18next"
-    ]
+    ],
+    "rules": {
+      "react/prop-types": "off"
+    },
+    "settings": {
+      "react": {
+        "version": "detect"
+      }
+    }
   },
   "browserslist": {
     "production": [
@@ -63,8 +80,8 @@
   "devDependencies": {
     "@babel/eslint-parser": "7.22.9",
     "@doist/react-interpolate": "0.4.1",
-    "@sentry/react": "7.60.0",
-    "@sentry/tracing": "7.60.0",
+    "@sentry/react": "7.60.1",
+    "@sentry/tracing": "7.60.1",
     "@testing-library/jest-dom": "5.16.5",
     "@testing-library/react": "12.1.5",
     "@tryghost/i18n": "0.0.0",
@@ -73,13 +90,11 @@
     "@vitest/ui": "0.33.0",
     "concurrently": "8.2.0",
     "cross-fetch": "4.0.0",
-    "eslint": "8.44.0",
-    "eslint-config-react-app": "7.0.1",
-    "eslint-plugin-i18next": "^6.0.1",
+    "eslint-plugin-i18next": "6.0.3",
     "jsdom": "22.1.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "vite": "4.4.6",
+    "vite": "4.4.7",
     "vite-plugin-css-injected-by-js": "3.2.1",
     "vite-plugin-svgr": "3.2.0",
     "vitest": "0.33.0"

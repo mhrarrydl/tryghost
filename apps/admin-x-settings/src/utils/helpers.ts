@@ -51,7 +51,7 @@ export function generateAvatarColor(name: string) {
     const s = 70;
     const l = 40;
     let hash = 0;
-    for (var i = 0; i < name.length; i++) {
+    for (let i = 0; i < name.length; i++) {
         hash = name.charCodeAt(i) + ((hash << 5) - hash);
     }
 
@@ -142,4 +142,8 @@ export function getArchivedTiers(tiers: Tier[]) {
     return tiers.filter((tier) => {
         return !tier.active;
     });
+}
+
+export function numberWithCommas(x: number) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }

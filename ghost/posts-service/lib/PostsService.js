@@ -53,6 +53,7 @@ class PostsService {
                 postIds.push('null');
             }
             options.filter = `id:[${postIds.join(',')}]+type:post`;
+            options.status = 'all';
             posts = await this.models.Post.findPage(options);
         } else {
             posts = await this.models.Post.findPage(options);

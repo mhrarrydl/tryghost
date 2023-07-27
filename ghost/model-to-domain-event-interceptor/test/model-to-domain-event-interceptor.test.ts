@@ -2,11 +2,12 @@ import assert from 'assert/strict';
 import events from 'events';
 import sinon from 'sinon';
 import DomainEvents from '@tryghost/domain-events';
-const {
+import {
     PostDeletedEvent,
     PostEditedEvent,
-    PostAddedEvent
-} = require('@tryghost/collections');
+    PostAddedEvent,
+    TagDeletedEvent
+} from '@tryghost/collections';
 
 import {ModelToDomainEventInterceptor} from '../src';
 
@@ -84,8 +85,8 @@ describe('ModelToDomainEventInterceptor', function () {
             assert.equal(event.data.current.status, 'draft');
             assert.equal(event.data.previous.status, 'published');
 
-            assert.equal(event.data.current.tags[0], 'tag-current-slug');
-            assert.equal(event.data.previous.tags[0], 'tag-previous-slug');
+            assert.deepEqual(event.data.current.tags[0], {slug: 'tag-current-slug'});
+            assert.deepEqual(event.data.previous.tags[0], {slug: 'tag-previous-slug'});
             interceptedEvent = event;
         });
 
@@ -142,6 +143,34 @@ describe('ModelToDomainEventInterceptor', function () {
 
         eventRegistry.emit('post.deleted', {
             id: '1234-deleted'
+        });
+
+        await DomainEvents.allSettled();
+
+        assert.ok(interceptedEvent);
+    });
+
+    it('Intercepts tag.deleted Model event and dispatches TagDeletedEvent Domain event', async function () {
+        let eventRegistry = new EventRegistry();
+        const modelToDomainEventInterceptor = new ModelToDomainEventInterceptor({
+            ModelEvents: eventRegistry,
+            DomainEvents: DomainEvents
+        });
+
+        modelToDomainEventInterceptor.init();
+
+        let interceptedEvent;
+        DomainEvents.subscribe(TagDeletedEvent, (event: TagDeletedEvent) => {
+            assert.equal(event.id, '1234-deleted');
+            assert.equal(event.data.slug, 'tag-slug');
+            interceptedEvent = event;
+        });
+
+        eventRegistry.emit('tag.deleted', {
+            id: '1234-deleted',
+            attributes: {
+                slug: 'tag-slug'
+            }
         });
 
         await DomainEvents.allSettled();
