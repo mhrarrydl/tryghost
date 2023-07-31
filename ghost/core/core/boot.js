@@ -350,6 +350,7 @@ async function initServices({config}) {
     const mediaInliner = require('./server/services/media-inliner');
     const collections = require('./server/services/collections');
     const mailEvents = require('./server/services/mail-events');
+    const donationService = require('./server/services/donations');
 
     const urlUtils = require('./shared/url-utils');
 
@@ -388,7 +389,8 @@ async function initServices({config}) {
         slackNotifications.init(),
         collections.init(),
         mediaInliner.init(),
-        mailEvents.init()
+        mailEvents.init(),
+        donationService.init()
     ]);
     debug('End: Services');
 
