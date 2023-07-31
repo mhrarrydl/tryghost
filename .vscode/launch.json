@@ -8,6 +8,9 @@
             "type": "node",
             "request": "launch",
             "name": "Ghost core + Admin",
+            "env": {
+                "GHOST_NEW_ROUTER": "hardcore"
+            },
             "skipFiles": [
                 "<node_internals>/**"
             ],
