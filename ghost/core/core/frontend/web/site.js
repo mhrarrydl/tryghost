@@ -150,14 +150,10 @@ module.exports = function setupSiteApp(routerConfig) {
     debug('General middleware done');
 
     if (routerConfig.newRouter) {
-        const {api, ProtoRouter, HardcoreRouter} = routerConfig.newRouter;
+        const {api, ProtoRouter} = routerConfig.newRouter;
 
         // This will likely look very different, it's just prototype code to inject new routing logic for now
-        if (labs.isSet('hardcoreRouter')) {
-            router = new HardcoreRouter({express, config, urlUtils, api});
-        } else {
-            router = new ProtoRouter({express, config, urlUtils, api});
-        }
+        const router = new ProtoRouter({express, config, urlUtils, api});
         siteApp.set('router', router);
         siteApp.use(router.routeRequest.bind(router));
     } else {

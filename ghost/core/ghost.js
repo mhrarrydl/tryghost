@@ -44,7 +44,7 @@ case 'new-frontend':
     break;
 case 'new-router':
     // Boot sequence with new router
-    require('./core/boot')({frontend: true, newRouter: true});
+    require('./core/boot')({frontend: true, newRouter: process.env.GHOST_NEW_ROUTER});
     break;
 
 default:

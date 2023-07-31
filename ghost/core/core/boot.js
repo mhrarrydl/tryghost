@@ -230,7 +230,7 @@ async function initFrontend(dataService) {
  * @param {Boolean} options.backend
  * @param {Boolean} options.frontend
  * @param {Boolean} options.newFrontend
- * @param {Boolean} options.newRouter
+ * @param {string} options.newRouter
  * @param {Object} options.config
  * @param {Object} options.newRouter
  */
@@ -254,8 +254,10 @@ async function initExpressApps({frontend, backend, newFrontend, newRouter, confi
         if (newRouter) {
             // LOOK MOM, NO URLSERVICE! :tada:
             // All new dependencies to be injected here, so that we can keep track & maybe make this independent of the core
+            const ProtoRouter = require('./frontend/services/proto-router');
+            const HardcoreRouter = require('./frontend/services/hardcore-router');
             const dependencies = {
-                ProtoRouter: require('./frontend/services/proto-router'),
+                ProtoRouter: newRouter === 'hardcore' ? HardcoreRouter : ProtoRouter,
                 api: require('./server/api').endpoints
             };
             frontendApp = require('./server/web/parent/frontend')({newRouter: dependencies});
