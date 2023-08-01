@@ -136,7 +136,7 @@ module.exports = class ProtoRouter {
             res.routerOptions = {
                 type: 'custom',
                 defaultTemplate: 'homepage',
-                templates: ['homepage']
+                templates: ['homepage', 'home', 'index']
             };
 
             rendering.renderer(req, res, response.data);
