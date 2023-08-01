@@ -53,7 +53,7 @@ export default class FeatureService extends Service {
 
     // user-specific flags
     @feature('nightShift', {user: true, onChange: '_setAdminTheme'})
-        nightShift;
+    nightShift;
 
     // user-specific referral invitation
     @feature('referralInviteDismissed', {user: true}) referralInviteDismissed;

@@ -1,5 +1,11 @@
 import logging from '@tryghost/logging';
 import tpl from '@tryghost/tpl';
+import {Knex} from "knex";
+import {
+    PostsBulkUnpublishedEvent,
+    PostsBulkFeaturedEvent,
+    PostsBulkUnfeaturedEvent
+} from "@tryghost/post-events";
 import {Collection} from './Collection';
 import {CollectionRepository} from './CollectionRepository';
 import {CollectionPost} from './CollectionPost';
@@ -7,6 +13,7 @@ import {MethodNotAllowedError} from '@tryghost/errors';
 import {PostDeletedEvent} from './events/PostDeletedEvent';
 import {PostAddedEvent} from './events/PostAddedEvent';
 import {PostEditedEvent} from './events/PostEditedEvent';
+import {PostsBulkDestroyedEvent} from '@tryghost/post-events';
 import {RepositoryUniqueChecker} from './RepositoryUniqueChecker';
 import {TagDeletedEvent} from './events/TagDeletedEvent';
 
@@ -22,8 +29,7 @@ const messages = {
 };
 
 interface SlugService {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    generate(desired: string, options: {transaction: any}): Promise<string>;
+    generate(desired: string, options: {transaction: Knex.Transaction}): Promise<string>;
 }
 
 type CollectionsServiceDeps = {
@@ -94,8 +100,7 @@ type QueryOptions = {
     include?: string;
     page?: number;
     limit?: number;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    transaction?: any;
+    transaction?: Knex.Transaction;
 }
 
 interface PostsRepository {
@@ -176,6 +181,26 @@ export class CollectionsService {
         this.DomainEvents.subscribe(PostEditedEvent, async (event: PostEditedEvent) => {
             logging.info(`PostEditedEvent received, updating post ${event.data.id} in matching collections`);
             await this.updatePostInMatchingCollections(event.data);
+        });
+
+        this.DomainEvents.subscribe(PostsBulkDestroyedEvent, async (event: PostsBulkDestroyedEvent) => {
+            logging.info(`BulkDestroyEvent received, removing posts ${event.data} from all collections`);
+            await this.removePostsFromAllCollections(event.data);
+        });
+
+        this.DomainEvents.subscribe(PostsBulkUnpublishedEvent, async (event: PostsBulkUnpublishedEvent) => {
+            logging.info(`PostsBulkUnpublishedEvent received, updating collection posts ${event.data}`);
+            await this.updateUnpublishedPosts(event.data);
+        });
+
+        this.DomainEvents.subscribe(PostsBulkFeaturedEvent, async (event: PostsBulkFeaturedEvent) => {
+            logging.info(`PostsBulkFeaturedEvent received, updating collection posts ${event.data}`);
+            await this.updateFeaturedPosts(event.data);
+        });
+
+        this.DomainEvents.subscribe(PostsBulkUnfeaturedEvent, async (event: PostsBulkUnfeaturedEvent) => {
+            logging.info(`PostsBulkUnfeaturedEvent received, updating collection posts ${event.data}`);
+            await this.updateFeaturedPosts(event.data);
         });
 
         this.DomainEvents.subscribe(TagDeletedEvent, async (event: TagDeletedEvent) => {
@@ -269,6 +294,21 @@ export class CollectionsService {
         });
     }
 
+    private async removePostsFromAllCollections(postIds: string[]) {
+        return await this.collectionsRepository.createTransaction(async (transaction) => {
+            const collections = await this.collectionsRepository.getAll({transaction});
+
+            for (const collection of collections) {
+                for (const postId of postIds) {
+                    if (collection.includesPost(postId)) {
+                        collection.removePost(postId);
+                    }
+                }
+                await this.collectionsRepository.save(collection, {transaction});
+            }
+        });
+    }
+
     private async addPostToMatchingCollections(post: CollectionPost) {
         return await this.collectionsRepository.createTransaction(async (transaction) => {
             const collections = await this.collectionsRepository.getAll({
@@ -289,7 +329,7 @@ export class CollectionsService {
     async updatePostInMatchingCollections(postEdit: PostEditedEvent['data']) {
         return await this.collectionsRepository.createTransaction(async (transaction) => {
             const collections = await this.collectionsRepository.getAll({
-                filter: 'type:automatic',
+                filter: 'type:automatic+slug:-latest',
                 transaction
             });
 
@@ -312,6 +352,63 @@ export class CollectionsService {
                 }
             }
         });
+    }
+
+    async updateUnpublishedPosts(postIds: string[]) {
+        return await this.collectionsRepository.createTransaction(async (transaction) => {
+            let collections = await this.collectionsRepository.getAll({
+                filter: 'type:automatic+slug:-latest+slug:-featured',
+                transaction
+            });
+
+            // only process collections that have a filter that includes published_at
+            collections = collections.filter((collection) => collection.filter?.includes('published_at'));
+
+            if (!collections.length) {
+                return;
+            }
+
+            await this.updatePostsInCollections(postIds, collections, transaction);
+        });
+    }
+
+    async updateFeaturedPosts(postIds: string[]) {
+        return await this.collectionsRepository.createTransaction(async (transaction) => {
+            let collections = await this.collectionsRepository.getAll({
+                filter: 'type:automatic+slug:-latest',
+                transaction
+            });
+
+            // only process collections that have a filter that includes featured
+            collections = collections.filter((collection) => collection.filter?.includes('featured'));
+
+            if (!collections.length) {
+                return;
+            }
+
+            await this.updatePostsInCollections(postIds, collections, transaction);
+        });
+    }
+
+    async updatePostsInCollections(postIds: string[], collections: Collection[], transaction: Knex.Transaction) {
+        const posts = await this.postsRepository.getAll({
+            filter: `id:[${postIds.join(',')}]`,
+            transaction: transaction
+        });
+
+        for (const collection of collections) {
+            for (const post of posts) {
+                if (collection.includesPost(post.id) && !collection.postMatchesFilter(post)) {
+                    collection.removePost(post.id);
+                    logging.info(`[Collections] Post ${post.id} was updated and removed from collection ${collection.id} with filter ${collection.filter}`);
+                } else if (!collection.includesPost(post.id) && collection.postMatchesFilter(post)) {
+                    await collection.addPost(post);
+                    logging.info(`[Collections] Post ${post.id} was unpublished and added to collection ${collection.id} with filter ${collection.filter}`);
+                }
+            }
+
+            await this.collectionsRepository.save(collection, {transaction});
+        }
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

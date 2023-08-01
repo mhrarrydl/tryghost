@@ -4,6 +4,13 @@ const tpl = require('@tryghost/tpl');
 const errors = require('@tryghost/errors');
 const ObjectId = require('bson-objectid').default;
 const pick = require('lodash/pick');
+const DomainEvents = require('@tryghost/domain-events/lib/DomainEvents');
+const {
+    PostsBulkDestroyedEvent,
+    PostsBulkUnpublishedEvent,
+    PostsBulkFeaturedEvent,
+    PostsBulkUnfeaturedEvent
+} = require('@tryghost/post-events');
 
 const messages = {
     invalidVisibilityFilter: 'Invalid visibility filter.',
@@ -388,7 +395,12 @@ class PostsService {
 
         // Posts and emails
         await this.models.Post.bulkDestroy(deleteEmailIds, 'emails', {transacting: options.transacting, throwErrors: true});
-        return await this.models.Post.bulkDestroy(deleteIds, 'posts', {...options, throwErrors: true});
+        const result = await this.models.Post.bulkDestroy(deleteIds, 'posts', {...options, throwErrors: true});
+
+        const event = PostsBulkDestroyedEvent.create(deleteIds);
+        DomainEvents.dispatch(event);
+
+        return result;
     }
 
     async export(frame) {
@@ -452,6 +464,23 @@ class PostsService {
                 transacting: options.transacting,
                 throwErrors: true
             });
+        }
+
+        if (options.actionName) {
+            let bulkActionEvent;
+            switch (options.actionName) {
+            case 'unpublished':
+                bulkActionEvent = PostsBulkUnpublishedEvent.create(editIds);
+                break;
+            case 'featured':
+                bulkActionEvent = PostsBulkFeaturedEvent.create(editIds);
+                break;
+            case 'unfeatured':
+                bulkActionEvent = PostsBulkUnfeaturedEvent.create(editIds);
+                break;
+            }
+
+            DomainEvents.dispatch(bulkActionEvent);
         }
 
         return result;

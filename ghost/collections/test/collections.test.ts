@@ -8,11 +8,17 @@ import {
     PostEditedEvent,
     TagDeletedEvent
 } from '../src/index';
+import {
+    PostsBulkDestroyedEvent,
+    PostsBulkUnpublishedEvent,
+    PostsBulkFeaturedEvent,
+    PostsBulkUnfeaturedEvent
+} from '@tryghost/post-events';
 import {PostsRepositoryInMemory} from './fixtures/PostsRepositoryInMemory';
 import {posts as postFixtures} from './fixtures/posts';
 import {CollectionPost} from '../src/CollectionPost';
 
-const initPostsRepository = (posts: any): PostsRepositoryInMemory => {
+const initPostsRepository = async (posts: any): Promise<PostsRepositoryInMemory> => {
     const postsRepository = new PostsRepositoryInMemory();
 
     for (const post of posts) {
@@ -21,11 +27,12 @@ const initPostsRepository = (posts: any): PostsRepositoryInMemory => {
             title: post.title,
             slug: post.slug,
             featured: post.featured,
-            published_at: post.published_at,
+            published_at: post.published_at?.toISOString(),
             tags: post.tags,
             deleted: false
         };
-        postsRepository.save(collectionPost as CollectionPost & {deleted: false});
+
+        await postsRepository.save(collectionPost as CollectionPost & {deleted: false});
     }
 
     return postsRepository;
@@ -37,7 +44,7 @@ describe('CollectionsService', function () {
 
     beforeEach(async function () {
         const collectionsRepository = new CollectionsRepositoryInMemory();
-        postsRepository = initPostsRepository(postFixtures);
+        postsRepository = await initPostsRepository(postFixtures);
 
         collectionsService = new CollectionsService({
             collectionsRepository,
@@ -314,7 +321,7 @@ describe('CollectionsService', function () {
 
             it('Updates all automatic collections when a tag is deleted', async function () {
                 const collectionsRepository = new CollectionsRepositoryInMemory();
-                postsRepository = initPostsRepository([
+                postsRepository = await initPostsRepository([
                     {
                         id: 'post-1',
                         url: 'http://localhost:2368/post-1/',
@@ -403,6 +410,108 @@ describe('CollectionsService', function () {
                 assert.equal((await collectionsService.getById(manualCollection.id))?.posts.length, 1);
             });
 
+            it('Updates all collections when posts are deleted in bulk', async function () {
+                assert.equal((await collectionsService.getById(automaticFeaturedCollection.id))?.posts?.length, 2);
+                assert.equal((await collectionsService.getById(automaticNonFeaturedCollection.id))?.posts.length, 2);
+                assert.equal((await collectionsService.getById(manualCollection.id))?.posts.length, 2);
+
+                collectionsService.subscribeToEvents();
+                const postDeletedEvent = PostsBulkDestroyedEvent.create([
+                    postFixtures[0].id,
+                    postFixtures[1].id
+                ]);
+
+                DomainEvents.dispatch(postDeletedEvent);
+                await DomainEvents.allSettled();
+
+                assert.equal((await collectionsService.getById(automaticFeaturedCollection.id))?.posts?.length, 2);
+                assert.equal((await collectionsService.getById(automaticNonFeaturedCollection.id))?.posts.length, 0);
+                assert.equal((await collectionsService.getById(manualCollection.id))?.posts.length, 0);
+            });
+
+            it('Updates collections with publish filter when PostsBulkUnpublishedEvent event is produced', async function () {
+                const publishedPostsCollection = await collectionsService.createCollection({
+                    title: 'Published Posts',
+                    slug: 'published-posts',
+                    type: 'automatic',
+                    filter: 'published_at:>=2023-05-00T00:00:00.000Z'
+                });
+
+                assert.equal((await collectionsService.getById(publishedPostsCollection.id))?.posts.length, 2, 'Only two post fixtures are published on the 5th month of 2023');
+
+                assert.equal((await collectionsService.getById(automaticFeaturedCollection.id))?.posts?.length, 2);
+                assert.equal((await collectionsService.getById(automaticNonFeaturedCollection.id))?.posts.length, 2);
+                assert.equal((await collectionsService.getById(manualCollection.id))?.posts.length, 2);
+
+                collectionsService.subscribeToEvents();
+
+                await postsRepository.save(Object.assign(postFixtures[2], {
+                    published_at: null
+                }));
+                const postsBulkUnpublishedEvent = PostsBulkUnpublishedEvent.create([
+                    postFixtures[2].id
+                ]);
+
+                DomainEvents.dispatch(postsBulkUnpublishedEvent);
+                await DomainEvents.allSettled();
+
+                assert.equal((await collectionsService.getById(publishedPostsCollection.id))?.posts.length, 1, 'Only one post left as published on the 5th month of 2023');
+
+                assert.equal((await collectionsService.getById(automaticFeaturedCollection.id))?.posts.length, 2, 'There should be no change to the featured filter collection');
+                assert.equal((await collectionsService.getById(automaticNonFeaturedCollection.id))?.posts.length, 2, 'There should be no change to the non-featured filter collection');
+                assert.equal((await collectionsService.getById(manualCollection.id))?.posts.length, 2, 'There should be no change to the manual collection');
+            });
+
+            it('Updates collections with publish filter when PostsBulkFeaturedEvent/PostsBulkUnfeaturedEvent events are produced', async function () {
+                assert.equal((await collectionsService.getById(automaticFeaturedCollection.id))?.posts?.length, 2);
+                assert.equal((await collectionsService.getById(automaticNonFeaturedCollection.id))?.posts.length, 2);
+                assert.equal((await collectionsService.getById(manualCollection.id))?.posts.length, 2);
+
+                collectionsService.subscribeToEvents();
+
+                const featuredPost = await postsRepository.getById(postFixtures[0].id);
+                if (featuredPost) {
+                    featuredPost.featured = true;
+                }
+
+                await postsRepository.save(featuredPost as CollectionPost & {deleted: false});
+
+                const postsBulkFeaturedEvent = PostsBulkFeaturedEvent.create([
+                    postFixtures[0].id
+                ]);
+
+                DomainEvents.dispatch(postsBulkFeaturedEvent);
+                await DomainEvents.allSettled();
+
+                assert.equal((await collectionsService.getById(automaticFeaturedCollection.id))?.posts.length, 3, 'There should be one extra post in the featured filter collection');
+                assert.equal((await collectionsService.getById(automaticNonFeaturedCollection.id))?.posts.length, 1, 'There should be one less posts in the non-featured filter collection');
+                assert.equal((await collectionsService.getById(manualCollection.id))?.posts.length, 2, 'There should be no change to the manual collection');
+
+                const unFeaturedPost2 = await postsRepository.getById(postFixtures[2].id);
+                if (unFeaturedPost2) {
+                    unFeaturedPost2.featured = false;
+                }
+                await postsRepository.save(unFeaturedPost2 as CollectionPost & {deleted: false});
+
+                const unFeaturedPost3 = await postsRepository.getById(postFixtures[3].id);
+                if (unFeaturedPost3) {
+                    unFeaturedPost3.featured = false;
+                }
+                await postsRepository.save(unFeaturedPost3 as CollectionPost & {deleted: false});
+
+                const postsBulkUnfeaturedEvent = PostsBulkUnfeaturedEvent.create([
+                    postFixtures[2].id,
+                    postFixtures[3].id
+                ]);
+
+                DomainEvents.dispatch(postsBulkUnfeaturedEvent);
+                await DomainEvents.allSettled();
+
+                assert.equal((await collectionsService.getById(automaticFeaturedCollection.id))?.posts.length, 1, 'There should be two less posts in the featured filter collection');
+                assert.equal((await collectionsService.getById(automaticNonFeaturedCollection.id))?.posts.length, 3, 'There should be two extra posts in the non-featured filter collection');
+                assert.equal((await collectionsService.getById(manualCollection.id))?.posts.length, 2, 'There should be no change to the manual collection');
+            });
+
             it('Updates only index collection when a non-featured post is added', async function () {
                 assert.equal((await collectionsService.getById(automaticFeaturedCollection.id))?.posts?.length, 2);
                 assert.equal((await collectionsService.getById(automaticNonFeaturedCollection.id))?.posts.length, 2);
@@ -422,7 +531,7 @@ describe('CollectionsService', function () {
                 assert.equal((await collectionsService.getById(manualCollection.id))?.posts.length, 2);
             });
 
-            it('Moves post form featured to non featured collection when the featured attribute is changed', async function () {
+            it('Moves post from featured to non featured collection when the featured attribute is changed', async function () {
                 collectionsService.subscribeToEvents();
                 const newFeaturedPost: CollectionPost & {deleted: false} = {
                     id: 'post-featured',

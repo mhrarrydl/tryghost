@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useState} from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 export type Dirtyable<Data> = Data & {
     dirty?: boolean;
@@ -23,7 +23,7 @@ export interface FormHook<State> {
 
 // TODO: figure out if we need to extend `any`?
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
-const useForm = <State extends any>({initialState, onSave}: {
+const useForm = <State>({initialState, onSave}: {
     initialState: State,
     onSave: () => void | Promise<void>
 }): FormHook<State> => {
@@ -46,8 +46,13 @@ const useForm = <State extends any>({initialState, onSave}: {
         }
 
         setSaveState('saving');
-        await onSave();
-        setSaveState('saved');
+        try {
+            await onSave();
+            setSaveState('saved');
+        } catch (e) {
+            setSaveState('unsaved');
+            throw e;
+        }
     };
 
     const updateForm = useCallback((updater: (state: State) => State) => {
