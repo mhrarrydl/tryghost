@@ -256,8 +256,10 @@ async function initExpressApps({frontend, backend, newFrontend, newRouter, confi
             // All new dependencies to be injected here, so that we can keep track & maybe make this independent of the core
             const ProtoRouter = require('./frontend/services/proto-router');
             const HardcoreRouter = require('./frontend/services/hardcore-router');
+            const labs = require('./shared/labs');
+            let useHardcoreRouter = newRouter === 'hardcore' || labs.isSet('hardcoreRouter');
             const dependencies = {
-                ProtoRouter: newRouter === 'hardcore' ? HardcoreRouter : ProtoRouter,
+                ProtoRouter: useHardcoreRouter ? HardcoreRouter : ProtoRouter,
                 api: require('./server/api').endpoints
             };
             frontendApp = require('./server/web/parent/frontend')({newRouter: dependencies});
