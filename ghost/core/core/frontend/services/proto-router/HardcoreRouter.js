@@ -21,9 +21,9 @@ module.exports = class HardcoreRouter {
      * HAxxxxxxxXor
      */
     async populateRoutingService() {
-        const {collections} = await this.api.collections.browse();
-        const {tags} = await this.api.tags.browse();
-        const {posts} = await this.api.posts.browse();
+        const {collections} = await this.api.collections.browse({limit: 'all'});
+        const {tags} = await this.api.tags.browse({limit: 'all'});
+        const {posts} = await this.api.posts.browse({limit: 'all'});
 
         const homepageURL = new URL(`/`, this.baseUrl());
         await this.routingService.assignURL(homepageURL, {
