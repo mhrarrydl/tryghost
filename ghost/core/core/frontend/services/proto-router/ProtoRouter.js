@@ -25,9 +25,9 @@ module.exports = class ProtoRouter {
         } else if (checks.isNav(data)) {
             return this.urlUtils.urlJoin(baseUrl, `/${data.url}/`);
         } else if (checks.isTag(data)) {
-            return this.urlUtils.urlJoin(baseUrl, `/archive/?tag=${data.slug}/`);
+            return this.urlUtils.urlJoin(baseUrl, `/archive/?filter=tag:${data.slug}`);
         } else if (checks.isUser(data)) {
-            return this.urlUtils.urlJoin(baseUrl, `/archive/?author=${data.slug}/`);
+            return this.urlUtils.urlJoin(baseUrl, `/archive/?filter=author:${data.slug}`);
         } else if (checks.isCollection(data)) {
             return this.urlUtils.urlJoin(baseUrl, `/${data.slug}/`);
         }
@@ -46,18 +46,9 @@ module.exports = class ProtoRouter {
                 formats: ['html']
             };
 
-            if (url.searchParams.get('tag')) {
-                apiOptions.filter = `tag:${url.searchParams.get('tag')}`;
-            }
-
-            if (url.searchParams.get('author')) {
-                const authorFilter = `author:${url.searchParams.get('author')}`;
-
-                if (apiOptions.filter) {
-                    apiOptions.filter = `${apiOptions.filter}+${authorFilter}`;
-                } else {
-                    apiOptions.filter = authorFilter;
-                }
+            // @TODO validate this filter maybe, or else change to having clear urls like /archive/tag/:slug/
+            if (url.searchParams.get('filter')) {
+                apiOptions.filter = url.searchParams.get('filter');
             }
 
             let posts = await this.api.posts.browse(apiOptions);
