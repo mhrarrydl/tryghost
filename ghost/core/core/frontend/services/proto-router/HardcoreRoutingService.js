@@ -18,7 +18,7 @@
 /**
  * @typedef {(SlugBasedResource | IDBasedResource)} RoutingResource
 */
-module.exports = class RoutingService {
+module.exports = class HardcoreRoutingService {
     constructor() {
         this.urls = new Map();
         this.resources = new Map();
