@@ -1,4 +1,4 @@
-const debug = require('@tryghost/debug')('hardcore-router');
+const debug = require('@tryghost/debug')('proto-router:hardcore');
 const RoutingService = require('./HardcoreRoutingService');
 const {checks} = require('../data');
 const rendering = require('../rendering');
