@@ -12,13 +12,13 @@ const errors = require('@tryghost/errors');
 
 const {getMetaDataUrl} = metaData;
 
-module.exports = function url(options) {
+module.exports = async function url(options) {
     const absolute = options && options.hash.absolute && options.hash.absolute !== 'false';
     let outputUrl;
     if (options.data.root.settings.router) {
         // DIRTY HACK for Routing 2.0 - Just so we can change code in as few places as possible
         const router = options.data.root.settings.router;
-        outputUrl = router.urlFor(this);
+        outputUrl = await router.urlFor(this);
     } else {
         outputUrl = getMetaDataUrl(this, absolute);
     }
@@ -41,3 +41,5 @@ module.exports = function url(options) {
 
     return new SafeString(outputUrl);
 };
+
+module.exports.async = true;
