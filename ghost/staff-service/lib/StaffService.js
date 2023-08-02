@@ -96,10 +96,16 @@ class StaffService {
         if (type === MemberCreatedEvent && member.status === 'free') {
             let attribution;
             try {
+                // the timeout is a temp patch, not a proper fix.
+                // there's a timing / race issue where attributon is often not available by the time it tries to execute.
+                // it only happens when using MySQL, not SQLite. it's not clear why.
+                // this is a temp patch to add a delay to give attribution time to be created properly and then we fetch it;
+                setTimeout(() => {}, 3000);
                 attribution = await this.memberAttributionService.getMemberCreatedAttribution(event.data.memberId);
             } catch (e) {
                 this.logging.warn(`Failed to get attribution for member - ${event?.data?.memberId}`);
             }
+
             await this.emails.notifyFreeMemberSignup({
                 member,
                 attribution
@@ -107,6 +113,12 @@ class StaffService {
         } else if (type === SubscriptionActivatedEvent) {
             let attribution;
             try {
+                // same as above
+                // the timeout is a temp patch, not a proper fix.
+                // there's a timing / race issue where attributon is often not available by the time it tries to execute.
+                // it only happens when using MySQL, not SQLite. it's not clear why.
+                // this is a temp patch to add a delay to give attribution time to be created properly and then we fetch it;
+                setTimeout(() => {}, 3000);
                 attribution = await this.memberAttributionService.getSubscriptionCreatedAttribution(event.data.subscriptionId);
             } catch (e) {
                 this.logging.warn(`Failed to get attribution for member - ${event?.data?.memberId}`);
