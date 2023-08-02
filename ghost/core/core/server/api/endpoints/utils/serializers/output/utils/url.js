@@ -24,6 +24,7 @@ const forPost = async (id, attrs, frame) => {
             }
         }
     } else {
+        attrs.url = urlService.getUrlByResourceId(id, {absolute: true});
         /**
          * CASE: admin api should serve preview urls
          *
