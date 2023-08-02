@@ -22,7 +22,9 @@ export default class PostSerializer extends ApplicationSerializer.extend(Embedde
         delete json.author_id;
         // Read-only virtual properties
         delete json.uuid;
-        delete json.url;
+
+        // NOTE: the url property commented out to allow sending it for the new "Hardcore" Routing System
+        // delete json.url;
         delete json.send_email_when_published;
         delete json.email_recipient_filter;
         delete json.email;

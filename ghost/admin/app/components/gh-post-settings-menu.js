@@ -63,6 +63,9 @@ export default class GhPostSettingsMenu extends Component {
     @boundOneWay('post.slug')
         slugValue;
 
+    @boundOneWay('post.url')
+        urlValue;
+
     @boundOneWay('post.uuid')
         uuidValue;
 
@@ -249,6 +252,19 @@ export default class GhPostSettingsMenu extends Component {
     updateSlug(newSlug) {
         return this.updateSlugTask
             .perform(newSlug)
+            .catch((error) => {
+                this.showError(error);
+                this.post.rollbackAttributes();
+            });
+    }
+
+    /**
+     * triggered by user manually changing URL
+     */
+    @action
+    updateURL(newURL) {
+        return this.updateURLTask
+            .perform(newURL)
             .catch((error) => {
                 this.showError(error);
                 this.post.rollbackAttributes();

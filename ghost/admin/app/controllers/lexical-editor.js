@@ -644,6 +644,35 @@ export default class LexicalEditorController extends Controller {
         return yield this._savePostTask.perform();
     }
 
+    /*
+     * triggered by a user manually changing slug
+     */
+    @task({group: 'saveTasks'})
+    *updateURLTask(_newURL) {
+        let url = this.get('post.url');
+        let newURL;
+
+        newURL = _newURL || url;
+        newURL = newURL && newURL.trim();
+
+        // Ignore unchanged urls or candidate urls that are empty
+        if (!newURL || url === newURL) {
+            // reset the input to its previous state
+            this.set('urlValue', url);
+            return;
+        }
+
+        // If this is a new post.  Don't save the post.  Defer the save
+        // to the user pressing the save button
+        if (this.get('post.isNew')) {
+            return;
+        }
+
+        this.set('post.url', newURL);
+
+        return yield this._savePostTask.perform();
+    }
+
     // used in the PSM so that saves are sequential and don't trigger collision
     // detection errors
     @task({group: 'saveTasks'})

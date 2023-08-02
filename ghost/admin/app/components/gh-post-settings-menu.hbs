@@ -12,7 +12,11 @@
                 <form aria-label="Post settings">
                     <section class="gh-post-settings">
                         <div class="form-group">
-                            <label for="url">{{capitalize this.post.displayName}} URL</label>
+                            {{#if this.feature.hardcoreRouter}}
+                            <label for="url">{{capitalize this.post.displayName}} Url</label>
+                            {{else}}
+                            <label for="url">{{capitalize this.post.displayName}} Slug</label>
+                            {{/if}}
                             {{!-- new posts don't have a preview link --}}
                             {{#unless this.post.isNew}}
                                 {{#if (or this.post.isPublished this.post.isSent)}}
@@ -37,10 +41,21 @@
                                     @focus-out={{action "updateSlug" this.slugValue}}
                                     @stopEnterKeyDownPropagation={{true}} />
                             </div>
+
+                            {{#if this.feature.hardcoreRouter}}
+                            <label for="actual-url">{{capitalize this.post.displayName}} URL</label>
+                            <div class="gh-input-icon gh-icon-link">
+                                {{svg-jar "link"}}
+                                <GhTextInput @class="post-setting-url" @id="actual-url" @name="post-setting-url" @value={{readonly this.urlValue}}
+                                    @input={{action (mut this.urlValue) value="target.value" }} @focus-out={{action "updateURL" this.urlValue}}
+                                    @stopEnterKeyDownPropagation={{true}} />
+                            </div>
+                            {{else}}
                             {{#if this.post.isSent}}
                                 <GhUrlPreview @prefix="email" @slug={{this.uuidValue}} @tagName="p" @classNames="description" />
                             {{else}}
                                 <GhUrlPreview @slug={{this.slugValue}} @tagName="p" @classNames="description" />
+                            {{/if}}
                             {{/if}}
                         </div>
 
