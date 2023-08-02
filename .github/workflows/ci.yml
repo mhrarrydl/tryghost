@@ -102,7 +102,6 @@ jobs:
             any-code:
               - '!**/*.md'
     outputs:
-<<<<<<< HEAD
       changed_admin: ${{ steps.changed.outputs.admin && env.IS_PROTOTYPE_BRANCH != 'true' }}
       changed_core: ${{ steps.changed.outputs.core && env.IS_PROTOTYPE_BRANCH != 'true' }}
       changed_admin_x_settings: ${{ steps.changed.outputs.admin-x-settings && env.IS_PROTOTYPE_BRANCH != 'true' }}
@@ -112,19 +111,8 @@ jobs:
       changed_signup_form: ${{ steps.changed.outputs.signup-form && env.IS_PROTOTYPE_BRANCH != 'true' }}
       changed_sodo_search: ${{ steps.changed.outputs.sodo-search && env.IS_PROTOTYPE_BRANCH != 'true' }}
       changed_any_code: ${{ steps.changed.outputs.any-code && env.IS_PROTOTYPE_BRANCH != 'true' }}
-=======
-      changed_admin: ${{ steps.changed.outputs.admin }}
-      changed_core: ${{ steps.changed.outputs.core }}
-      changed_admin_x_settings: ${{ steps.changed.outputs.admin-x-settings }}
-      changed_announcement_bar: ${{ steps.changed.outputs.announcement-bar }}
-      changed_comments_ui: ${{ steps.changed.outputs.comments-ui }}
-      changed_portal: ${{ steps.changed.outputs.portal }}
-      changed_signup_form: ${{ steps.changed.outputs.signup-form }}
-      changed_sodo_search: ${{ steps.changed.outputs.sodo-search }}
-      changed_any_code: ${{ steps.changed.outputs.any-code }}
-      changed_new_package: ${{ steps.added.outputs.new-package }}
+      changed_new_package: ${{ steps.added.outputs.new-package && env.IS_PROTOTYPE_BRANCH != 'true' }}
       base_commit: ${{ env.BASE_COMMIT }}
->>>>>>> main
       is_canary_branch: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/arch') }}
       is_main: ${{ github.ref == 'refs/heads/main' }}
 
