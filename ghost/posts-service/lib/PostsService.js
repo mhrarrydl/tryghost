@@ -115,6 +115,20 @@ class PostsService {
             }
         }
 
+        if (this.isSet('hardcoreRouter') && frame.data.posts[0].url) {
+            const hardcoreURLService = global.routingService;
+            const routingResource = {
+                id: frame.options.id,
+                type: 'post'
+            };
+            const newURL = new URL(frame.data.posts[0].url);
+            const previousURL = await hardcoreURLService.getURL(routingResource);
+
+            if (previousURL?.toString() !== newURL.toString()) {
+                frame.data.posts[0].url = await hardcoreURLService.reassignURL(newURL, routingResource);
+            }
+        }
+
         if (this.isSet('collections') && frame.data.posts[0].collections) {
             const existingCollections = await this.collectionsService.getCollectionsForPost(frame.options.id);
             for (const collection of frame.data.posts[0].collections) {

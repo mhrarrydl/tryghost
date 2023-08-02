@@ -11,8 +11,11 @@ module.exports = class HardcoreRouter {
         this.urlUtils = urlUtils;
         this.api = api;
 
-        this.routingService = new RoutingService();
+        this.routingService = new RoutingService({config});
         this.routingServiceReady = this.populateRoutingService();
+
+        // HAAAACKZZZ https://imgflip.com/i/7uel6w
+        global.routingService = this.routingService;
     }
 
     /**

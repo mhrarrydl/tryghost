@@ -19,9 +19,14 @@
  * @typedef {(SlugBasedResource | IDBasedResource)} RoutingResource
 */
 module.exports = class HardcoreRoutingService {
-    constructor() {
+    constructor({config}) {
+        this.config = config;
         this.urls = new Map();
         this.resources = new Map();
+    }
+
+    baseUrl() {
+        return this.config.getSiteUrl();
     }
 
     /**
@@ -46,6 +51,30 @@ module.exports = class HardcoreRoutingService {
         } else {
             return this.urls.get(resource.slug);
         }
+    }
+
+    /**
+     * @param {URL} url
+     * @param {RoutingResource} resource
+     * @returns {Promise<URL>}
+     */
+    async reassignURL(url, resource) {
+        if (this.resources.has(url.toString())) {
+            return this.reassignURL(this.getDifferentURL(url), resource);
+        }
+
+        let previousURL = await this.getURL(resource);
+
+        if ('id' in resource) {
+            this.urls.set(resource.id.toString(), url);
+        } else {
+            this.urls.set(resource.slug, url);
+        }
+
+        this.resources.set(url.toString(), resource);
+        this.resources.delete(previousURL.toString());
+
+        return url;
     }
 
     /**
@@ -80,6 +109,6 @@ module.exports = class HardcoreRoutingService {
             path += '-1';
         }
 
-        return new URL(path + '/', this.baseURL); // Don't forget to add the trailing slash back
+        return new URL(path + '/', this.baseUrl()); // Don't forget to add the trailing slash back
     }
 };

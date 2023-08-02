@@ -42,7 +42,7 @@ module.exports = async (model, frame, options = {}) => {
     jsonModel.email_segment = jsonModel.email_recipient_filter;
     delete jsonModel.email_recipient_filter;
 
-    url.forPost(model.id, jsonModel, frame);
+    await url.forPost(model.id, jsonModel, frame);
 
     extraAttrs.forPost(frame.options, model, jsonModel);
 

@@ -2,6 +2,7 @@ const jsonSchema = require('../utils/json-schema');
 const models = require('../../../../../models');
 const {ValidationError} = require('@tryghost/errors');
 const tpl = require('@tryghost/tpl');
+const labs = require('../../../../../../shared/labs');
 
 const messages = {
     invalidVisibilityFilter: 'Invalid filter in visibility_filter property',
@@ -59,7 +60,14 @@ module.exports = {
         await validateSingleContentSource(frame);
     },
     async edit(apiConfig, frame) {
+        const customURL = frame.data.posts[0].url;
+
         await jsonSchema.validate(...arguments);
+
+        if (labs.isSet('hardcoreRouter') && customURL) {
+            frame.data.posts[0].url = customURL;
+        }
+
         await validateVisibility(frame);
         await validateSingleContentSource(frame);
     }
