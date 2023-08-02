@@ -1,6 +1,6 @@
-import { QueryClient, UseQueryOptions, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { getGhostPaths } from './helpers';
-import { useServices } from '../components/providers/ServiceProvider';
+import {QueryClient, UseQueryOptions, useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+import {getGhostPaths} from './helpers';
+import {useServices} from '../components/providers/ServiceProvider';
 
 export interface Meta {
     pagination: {
@@ -47,13 +47,14 @@ export const useFetchApi = () => {
 
     return async (endpoint: string | URL, options: RequestOptions = {}) => {
         // By default, we set the Content-Type header to application/json
-        const defaultHeaders = {
+        const defaultHeaders: Record<string, string> = {
             'app-pragma': 'no-cache',
             'x-ghost-version': ghostVersion
         };
-        const headers = options?.headers || {
-            'Content-Type': 'application/json'
-        };
+        if (typeof options.body === 'string') {
+            defaultHeaders['content-type'] = 'application/json';
+        }
+        const headers = options?.headers || {};
         const response = await fetch(endpoint, {
             headers: {
                 ...defaultHeaders,
@@ -67,7 +68,7 @@ export const useFetchApi = () => {
 
         if (response.status > 299) {
             const data = response.headers.get('content-type')?.includes('application/json') ? await response.json() : undefined;
-            throw new ApiError(response, data)
+            throw new ApiError(response, data);
         } else if (response.status === 204) {
             return;
         } else {
@@ -138,11 +139,11 @@ const mutate = <ResponseData, Payload>({fetchApi, path, payload, searchParams, o
     const url = apiUrl(path, searchParams || defaultSearchParams);
     const generatedBody = payload && body?.(payload);
 
-    let requestBody: string | FormData | undefined = undefined
+    let requestBody: string | FormData | undefined = undefined;
     if (generatedBody instanceof FormData) {
-        requestBody = generatedBody
+        requestBody = generatedBody;
     } else if (generatedBody) {
-        requestBody = JSON.stringify(generatedBody)
+        requestBody = JSON.stringify(generatedBody);
     }
 
     return fetchApi(url, {
