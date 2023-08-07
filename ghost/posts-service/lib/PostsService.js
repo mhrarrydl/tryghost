@@ -101,6 +101,10 @@ class PostsService {
             let newURL;
 
             if (postData.url) {
+                if (!postData.url.endsWith('/')) {
+                    postData.url += '/';
+                }
+
                 newURL = await hardcoreURLService.assignURL(new URL(postData.url), routingResource);
             } else {
                 newURL = await hardcoreURLService.getNewURL({
@@ -151,6 +155,11 @@ class PostsService {
                 id: frame.options.id,
                 type: 'post'
             };
+
+            if (!frame.data.posts[0].url.endsWith('/')) {
+                frame.data.posts[0].url += '/';
+            }
+
             const newURL = new URL(frame.data.posts[0].url);
             const previousURL = await hardcoreURLService.getURL(routingResource);
 
