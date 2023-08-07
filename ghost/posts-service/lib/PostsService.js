@@ -105,7 +105,7 @@ class PostsService {
                     postData.url += '/';
                 }
 
-                newURL = await hardcoreURLService.assignURL(new URL(postData.url), routingResource);
+                newURL = await hardcoreURLService.assignURL(new URL(postData.url, hardcoreURLService.baseUrl()), routingResource);
             } else {
                 newURL = await hardcoreURLService.getNewURL({
                     id: model.get('id'),
@@ -160,7 +160,7 @@ class PostsService {
                 frame.data.posts[0].url += '/';
             }
 
-            const newURL = new URL(frame.data.posts[0].url);
+            const newURL = new URL(frame.data.posts[0].url, hardcoreURLService.baseUrl());
             const previousURL = await hardcoreURLService.getURL(routingResource);
 
             if (previousURL?.toString() !== newURL.toString()) {
