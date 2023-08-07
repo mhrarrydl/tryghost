@@ -25,9 +25,9 @@ module.exports = class HardcoreRouter {
      */
     async populateRoutingService() {
         const {collections} = await this.api.collections.browse({limit: 'all'});
-        const {tags} = await this.api.tags.browse({limit: 'all'});
+        const {tags} = await this.api.tagsPublic.browse({limit: 'all'});
         const {posts} = await this.api.posts.browse({limit: 'all'});
-
+        const {authors} = await this.api.authorsPublic.browse({limit: 'all'});
 
         const homepageURL = new URL(`/`, this.baseUrl());
         await this.routingService.assignURL(homepageURL, {
@@ -49,6 +49,14 @@ module.exports = class HardcoreRouter {
             await this.routingService.assignURL(url, {
                 type: 'tag',
                 id: tag.id
+            });
+        }
+
+        for (const author of authors) {
+            const url = new URL(`/author/${author.slug}/`, this.baseUrl());
+            await this.routingService.assignURL(url, {
+                type: 'author',
+                id: author.id
             });
         }
 
