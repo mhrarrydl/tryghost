@@ -87,6 +87,35 @@ class PostsService {
         return dto;
     }
 
+    async addPost(postData, options) {
+        const model = await this.models.Post.add(postData, options);
+
+        if (this.isSet('hardcoreRouter')) {
+            const hardcoreURLService = global.routingService;
+            const routingResource = {
+                id: model.id,
+                slug: model.get('slug'),
+                type: 'post'
+            };
+
+            let newURL;
+
+            if (postData.url) {
+                newURL = await hardcoreURLService.assignURL(new URL(postData.url), routingResource);
+            } else {
+                newURL = await hardcoreURLService.getNewURL({
+                    id: model.get('id'),
+                    slug: model.get('slug'),
+                    type: 'post'
+                });
+            }
+
+            model.set('url', newURL?.toString());
+        }
+
+        return model;
+    }
+
     /**
      * @typedef {'published_updated' | 'scheduled_updated' | 'draft_updated' | 'unpublished'} EventString
      */

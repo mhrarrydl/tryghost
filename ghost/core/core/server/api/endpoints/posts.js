@@ -164,17 +164,16 @@ module.exports = {
         permissions: {
             unsafeAttrs: unsafeAttrs
         },
-        query(frame) {
-            return models.Post.add(frame.data.posts[0], frame.options)
-                .then((model) => {
-                    if (model.get('status') !== 'published') {
-                        this.headers.cacheInvalidate = false;
-                    } else {
-                        this.headers.cacheInvalidate = true;
-                    }
+        async query(frame) {
+            const model = await postsService.addPost(frame.data.posts[0], frame.options);
 
-                    return model;
-                });
+            if (model.get('status') !== 'published') {
+                this.headers.cacheInvalidate = false;
+            } else {
+                this.headers.cacheInvalidate = true;
+            }
+
+            return model;
         }
     },
 

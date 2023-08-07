@@ -95,6 +95,26 @@ module.exports = class HardcoreRoutingService {
         return url;
     }
 
+    /**
+     *
+     * @param {RoutingResource} resource
+     */
+    async getNewURL(resource) {
+        let url;
+
+        if (resource.type === 'post') {
+            url = new URL(`/post/${resource.slug}/`, this.baseUrl());
+        } else {
+            // NOTE: add more types here
+            url = new URL(`/post/${resource.slug}/`, this.baseUrl());
+        }
+
+        return await this.assignURL(url, {
+            type: resource.type,
+            id: resource.id
+        });
+    }
+
     getDifferentURL(url) {
         let path = url.pathname;
 
