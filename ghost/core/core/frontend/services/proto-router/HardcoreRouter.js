@@ -28,6 +28,7 @@ module.exports = class HardcoreRouter {
         const {tags} = await this.api.tags.browse({limit: 'all'});
         const {posts} = await this.api.posts.browse({limit: 'all'});
 
+
         const homepageURL = new URL(`/`, this.baseUrl());
         await this.routingService.assignURL(homepageURL, {
             type: 'template',
@@ -107,6 +108,8 @@ module.exports = class HardcoreRouter {
             return null;
         }
 
+        debug('resource', resource);
+
         if (resource.type === 'post') {
             let {posts} = await this.api.posts.read({id: resource.id, formats: ['html']});
             let post = posts[0];
@@ -124,7 +127,7 @@ module.exports = class HardcoreRouter {
                 formats: ['html']
             };
 
-            apiOptions.filter = `tag:${resource.id}`;
+            apiOptions.filter = `tags.id:${resource.id}`;
 
             let posts = await this.api.posts.browse(apiOptions);
 
@@ -144,7 +147,7 @@ module.exports = class HardcoreRouter {
                 formats: ['html']
             };
 
-            apiOptions.filter = `author:${resource.id}`;
+            apiOptions.filter = `authors.id:${resource.id}`;
 
             let posts = await this.api.posts.browse(apiOptions);
 
