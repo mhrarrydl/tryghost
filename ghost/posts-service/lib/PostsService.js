@@ -115,6 +115,7 @@ class PostsService {
             }
         }
 
+        let urlChanged = false;
         if (this.isSet('hardcoreRouter') && frame.data.posts[0].url) {
             const hardcoreURLService = global.routingService;
             const routingResource = {
@@ -127,6 +128,8 @@ class PostsService {
             if (previousURL?.toString() !== newURL.toString()) {
                 frame.data.posts[0].url = await hardcoreURLService.reassignURL(newURL, routingResource);
             }
+
+            urlChanged = true;
         }
 
         if (this.isSet('collections') && frame.data.posts[0].collections) {
@@ -207,7 +210,11 @@ class PostsService {
         }
 
         if (typeof options?.eventHandler === 'function') {
-            await options.eventHandler(this.getChanges(model), dto);
+            if (urlChanged) {
+                await options.eventHandler('published_updated', dto);
+            } else {
+                await options.eventHandler(this.getChanges(model), dto);
+            }
         }
 
         return dto;
