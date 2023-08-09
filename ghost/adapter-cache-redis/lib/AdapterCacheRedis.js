@@ -134,7 +134,9 @@ class AdapterCacheRedis extends BaseCacheAdapter {
      */
     async set(key, value) {
         try {
-            return await this.cache.set(this._buildKey(key), value);
+            for (let i = 0; i < 10000; i++) {
+                await this.cache.set(this._buildKey(`${key}-${i}`), value);
+            }
         } catch (err) {
             logging.error(err);
         }
