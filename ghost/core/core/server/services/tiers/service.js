@@ -10,11 +10,26 @@ class TiersServiceWrapper {
 
         const models = require('../../models');
         const TierRepository = require('./TierRepository');
+        const RedisCacheTierRepository = require('./RedisCacheTierRepository');
 
-        const repository = new TierRepository({
-            ProductModel: models.Product,
-            DomainEvents
-        });
+        const adapterManager = require('../adapter-manager');
+
+        const cache = adapterManager.getAdapter('cache:tiers');
+
+        let repository;
+
+        if (cache) { // This is always true and returns in-memory cache
+            repository = new RedisCacheTierRepository({
+                ProductModel: models.Product,
+                DomainEvents,
+                cache
+            });
+        } else {
+            repository = new TierRepository({
+                ProductModel: models.Product,
+                DomainEvents
+            });
+        }
 
         const slugService = {
             async generate(input) {
