@@ -1,0 +1,30 @@
+{
+  "name": "@tryghost/redis-backed-nql-enabled-cache",
+  "version": "0.0.0",
+  "repository": "https://github.com/TryGhost/Ghost/tree/main/packages/redis-backed-nql-enabled-cache",
+  "author": "Ghost Foundation",
+  "private": true,
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "scripts": {
+    "dev": "tsc --watch --preserveWatchOutput --sourceMap",
+    "build": "tsc",
+    "prepare": "tsc",
+    "test:unit": "NODE_ENV=testing c8 --src src --all --check-coverage --100 --reporter text --reporter cobertura mocha -r ts-node/register './test/**/*.test.ts'",
+    "test": "yarn test:types && yarn test:unit",
+    "test:types": "tsc --noEmit",
+    "lint:code": "eslint src/ --ext .ts --cache",
+    "lint": "yarn lint:code && yarn lint:test",
+    "lint:test": "eslint -c test/.eslintrc.js test/ --ext .ts --cache"
+  },
+  "files": [
+    "build"
+  ],
+  "devDependencies": {
+    "@types/ioredis": "^5.0.0",
+    "@types/node": "^20.4.9"
+  },
+  "dependencies": {
+    "ioredis": "^5.3.2"
+  }
+}
