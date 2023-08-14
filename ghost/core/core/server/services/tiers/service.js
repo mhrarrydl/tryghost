@@ -10,7 +10,7 @@ class TiersServiceWrapper {
 
         const models = require('../../models');
         const TierRepository = require('./TierRepository');
-        const RedisCacheTierRepository = require('./RedisCacheTierRepository');
+        const RedisCacheTierRepository = require('./RedisNQLCacheTierRepository');
 
         const adapterManager = require('../adapter-manager');
 
@@ -22,7 +22,9 @@ class TiersServiceWrapper {
             repository = new RedisCacheTierRepository({
                 ProductModel: models.Product,
                 DomainEvents,
-                cache
+                redisOptions: {
+
+                }
             });
         } else {
             repository = new TierRepository({
