@@ -477,6 +477,9 @@ function validateCreatedAt(value) {
     if (value instanceof Date) {
         return value;
     }
+    if (typeof value === 'string') {
+        return new Date(value);
+    }
     throw new ValidationError({
         message: 'Tier created_at must be a date'
     });
@@ -488,6 +491,9 @@ function validateUpdatedAt(value) {
     }
     if (value instanceof Date) {
         return value;
+    }
+    if (typeof value === 'string') {
+        return new Date(value);
     }
     throw new ValidationError({
         message: 'Tier created_at must be a date'
