@@ -128,8 +128,8 @@ export class CollectionsService {
         this.slugService = deps.slugService;
     }
 
-    private toDTO(collection: Collection): CollectionDTO {
-        return {
+    private async toDTO(collection: Collection): Promise<CollectionDTO> {
+        const dto = {
             id: collection.id,
             title: collection.title,
             slug: collection.slug,
@@ -144,6 +144,16 @@ export class CollectionsService {
                 sort_order: index
             }))
         };
+        if (collection.slug === 'latest') {
+            const allPosts = await this.postsRepository.getAll({ // TODO Support getting just ids
+                filter: 'id:-null' // TODO Support not using a filter
+            });
+            dto.posts = allPosts.map((post, index) => ({
+                id: post.id,
+                sort_order: index
+            }));
+        }
+        return dto;
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -572,11 +582,9 @@ export class CollectionsService {
     async getAll(options?: QueryOptions): Promise<{data: CollectionDTO[], meta: any}> {
         const collections = await this.collectionsRepository.getAll(options);
 
-        const collectionsDTOs: CollectionDTO[] = [];
-
-        for (const collection of collections) {
-            collectionsDTOs.push(this.toDTO(collection));
-        }
+        const collectionsDTOs: CollectionDTO[] = await Promise.all(
+            collections.map(collection => this.toDTO(collection))
+        );
 
         return {
             data: collectionsDTOs,
@@ -597,11 +605,10 @@ export class CollectionsService {
             filter: `posts:${postId}`
         });
 
-        return collections.map(collection => this.toDTO(collection))
-            .sort((a, b) => {
-                // NOTE: sorting is here to keep DB engine ordering consistent
-                return a.slug.localeCompare(b.slug);
-            });
+        return Promise.all(collections.sort((a, b) => {
+            // NOTE: sorting is here to keep DB engine ordering consistent
+            return a.slug.localeCompare(b.slug);
+        }).map(collection => this.toDTO(collection)));
     }
 
     async destroy(id: string): Promise<Collection | null> {
