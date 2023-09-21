@@ -610,7 +610,7 @@ export class CollectionsService {
     }
     async getCollectionsForPost(postId: string): Promise<CollectionDTO[]> {
         const collections = await this.collectionsRepository.getAll({
-            filter: `posts:${postId}`
+            filter: `posts:${postId},slug:latest`
         });
 
         return Promise.all(collections.sort((a, b) => {
