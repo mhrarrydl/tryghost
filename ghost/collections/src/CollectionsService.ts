@@ -108,6 +108,7 @@ type QueryOptions = {
 
 interface PostsRepository {
     getAll(options: QueryOptions): Promise<CollectionPost[]>;
+    getAllIds(): Promise<string[]>;
 }
 
 export class CollectionsService {
@@ -145,11 +146,9 @@ export class CollectionsService {
             }))
         };
         if (collection.slug === 'latest') {
-            const allPosts = await this.postsRepository.getAll({ // TODO Support getting just ids
-                filter: 'id:-null' // TODO Support not using a filter
-            });
-            dto.posts = allPosts.map((post, index) => ({
-                id: post.id,
+            const allPostIds = await this.postsRepository.getAllIds();
+            dto.posts = allPostIds.map((id, index) => ({
+                id,
                 sort_order: index
             }));
         }
