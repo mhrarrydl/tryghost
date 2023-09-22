@@ -1,9 +1,9 @@
 const _ = require('lodash');
 
 const api = require('./api').endpoints;
+const logging = require('@tryghost/logging');
 const config = require('../shared/config');
 const urlUtils = require('./../shared/url-utils');
-const jobsService = require('./services/jobs');
 const databaseInfo = require('./data/db/info');
 
 const request = require('@tryghost/request');
@@ -18,7 +18,7 @@ const UpdateCheckService = require('@tryghost/update-check-service');
  * @param {String} [options.updateCheckUrl] - the url to check for updates against, defaults to config if no value provided
  * @returns {Promise<any>}
  */
-module.exports = async ({
+const updateCheck = async ({
     rethrowErrors = false,
     forceUpdate = config.get('updateCheck:forceUpdate'),
     updateCheckUrl = config.get('updateCheck:url')
@@ -70,15 +70,29 @@ module.exports = async ({
     await updateChecker.check();
 };
 
-module.exports.scheduleRecurringJobs = () => {
-    // use a random seconds/minutes/hours value to avoid spikes to the update service API
-    const s = Math.floor(Math.random() * 60); // 0-59
-    const m = Math.floor(Math.random() * 60); // 0-59
-    const h = Math.floor(Math.random() * 24); // 0-23
+module.exports = updateCheck;
 
-    jobsService.addJob({
-        at: `${s} ${m} ${h} * * *`, // Every day
-        job: require('path').resolve(__dirname, 'run-update-check.js'),
-        name: 'update-check'
-    });
+module.exports.scheduleRecurringJobs = () => {
+    const callUpdateCheck = async () => {
+        try {
+            logging.info('Running update check');
+            await updateCheck({
+                rethrowErrors: true
+            });
+            logging.info('Ran update check');
+        } catch (error) {
+            logging.error({
+                message: 'Failed to run update check',
+                error
+            });
+        }
+    };
+
+    const firstRunMs = 5000; // Math.floor(Math.random() * 1000 * 60 * 60 * 24);
+    const firstRunTime = new Date(Date.now() + firstRunMs);
+    logging.info(`Scheduled first run of update check for ${firstRunTime}`);
+    setTimeout(() => {
+        callUpdateCheck();
+        setInterval(callUpdateCheck, 1000 * 60 * 60 * 24).unref();
+    }, firstRunMs).unref();
 };
