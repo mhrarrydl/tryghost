@@ -105,6 +105,7 @@
   },
   "devDependencies": {
     "concurrently": "8.2.1",
+    "dependency-cruiser": "^13.1.5",
     "eslint": "8.44.0",
     "eslint-plugin-ghost": "3.3.2",
     "eslint-plugin-react": "7.33.0",
