@@ -72,16 +72,24 @@ class GhostServer {
      */
     start(rootApp) {
         debug('Starting...');
+        const Fastify = require('fastify');
+        const fastify = Fastify();
+        fastify.register(require('@fastify/express'))
+            .after(() => {
+                fastify.use(rootApp);
+            });
+
         this.rootApp = rootApp;
 
         const {host, port, testmode, shutdownTimeout} = this.serverConfig;
         const self = this;
 
         return new Promise(function (resolve, reject) {
-            self.httpServer = rootApp.listen(
+            fastify.listen({
                 port,
                 host
-            );
+            });
+            self.httpServer = fastify.server;
 
             self.httpServer.on('error', function (error) {
                 let ghostError;

@@ -60,6 +60,7 @@
   },
   "dependencies": {
     "@extractus/oembed-extractor": "3.2.1",
+    "@fastify/express": "^2.3.0",
     "@sentry/node": "7.70.0",
     "@tryghost/adapter-base-cache": "0.1.5",
     "@tryghost/adapter-cache-redis": "0.0.0",
@@ -185,6 +186,7 @@
     "express-lazy-router": "1.0.6",
     "express-query-boolean": "2.0.0",
     "express-session": "1.17.3",
+    "fastify": "^4.24.0",
     "fs-extra": "11.1.1",
     "ghost-storage-base": "1.0.0",
     "glob": "8.1.0",
