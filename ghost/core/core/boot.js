@@ -429,7 +429,6 @@ async function initNestDeps() {
         provide: 'config',
         useValue: require('./shared/config')
     });
-    Reflect.defineMetadata('providers', providers, GhostNestApp.AppModule);
 }
 
 /**
