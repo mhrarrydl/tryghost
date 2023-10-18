@@ -13,7 +13,7 @@ Injectable({ scope: Scope.REQUEST })(UserService);
   providers: [
     UserService,
     {
-      provide: 'UserService.UserRepository',
+      provide: 'UserRepository',
       useClass: UserRepositoryImpl,
     },
   ],

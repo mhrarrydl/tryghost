@@ -1,10 +1,15 @@
+import {Inject} from "../common/inject";
 import { User } from "../ghost/user/entities/user.entity";
 import { IUserRepository } from "../ghost/user/user.repository";
+import {Knex} from 'knex';
 
 export class UserRepositoryImpl implements IUserRepository {
     idMap: Map<string, User>;
     emailMap: Map<string, string>;
-    constructor() {
+    knex: Knex;
+    constructor(@Inject('knex') knex: Knex) {
+        this.knex = knex;
+        console.log(this.knex);
         this.idMap = new Map();
         this.emailMap = new Map();
     }

@@ -418,6 +418,20 @@ async function initBackgroundServices({config}) {
     debug('End: initBackgroundServices');
 }
 
+async function initNestDeps() {
+    const GhostNestApp = require('@tryghost/app');
+    const providers = Reflect.getMetadata('providers', GhostNestApp.AppModule);
+    providers.push({
+        provide: 'knex',
+        useValue: require('./server/data/db').knex
+    });
+    providers.push({
+        provide: 'config',
+        useValue: require('./shared/config')
+    });
+    Reflect.defineMetadata('providers', providers, GhostNestApp.AppModule);
+}
+
 /**
  * ----------------------------------
  * Boot Ghost - The magic starts here
@@ -499,6 +513,10 @@ async function bootGhost({backend = true, frontend = true, server = true} = {}) 
         await initDatabase({config});
         bootLogger.log('database ready');
         debug('End: Get DB ready');
+
+        debug('Begin: Setup dependencies for Nest');
+        await initNestDeps();
+        debug('End: Setup dependencies for Nest');
 
         // Step 4 - Load Ghost with all its services
         debug('Begin: Load Ghost Services & Apps');

@@ -23,6 +23,7 @@
   "devDependencies": {
     "c8": "8.0.1",
     "express": "^4.18.2",
+    "knex": "^3.0.1",
     "mocha": "10.2.0",
     "reflect-metadata": "^0.1.13",
     "sinon": "16.1.0",
