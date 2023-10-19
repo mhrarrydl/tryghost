@@ -1,3 +1,4 @@
+console.log('UserService file loaded');
 import { CreateUserDto } from '../../http/controllers/dto/create-user.dto';
 import { UpdateUserDto } from '../../http/controllers/dto/update-user.dto';
 import { IUserRepository } from './user.repository';

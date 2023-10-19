@@ -1,3 +1,4 @@
+console.log('UserController file loaded');
 import {
     Controller,
     Get,
