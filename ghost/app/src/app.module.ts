@@ -8,7 +8,14 @@ import { LoggerMiddleware } from './logger/logger.middleware';
 
 Injectable({ scope: Scope.REQUEST })(UserService);
 
-@Module({
+class AppModule {
+    configure(consumer: MiddlewareConsumer) {
+        consumer.apply(LoggerMiddleware);
+    }
+}
+
+export const App = {
+    module: AppModule,
     controllers: [UserController],
     providers: [
         UserService,
@@ -17,9 +24,4 @@ Injectable({ scope: Scope.REQUEST })(UserService);
             useClass: UserRepositoryImpl,
         },
     ],
-})
-export class AppModule {
-    configure(consumer: MiddlewareConsumer) {
-        consumer.apply(LoggerMiddleware);
-    }
-}
+};

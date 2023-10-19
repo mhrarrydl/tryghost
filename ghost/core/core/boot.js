@@ -420,7 +420,8 @@ async function initBackgroundServices({config}) {
 
 async function initNestDeps() {
     const GhostNestApp = require('@tryghost/app');
-    const providers = Reflect.getMetadata('providers', GhostNestApp.AppModule);
+    console.log(GhostNestApp);
+    const providers = GhostNestApp.App.providers;
     providers.push({
         provide: 'knex',
         useFactory: () => require('./server/data/db').knex
