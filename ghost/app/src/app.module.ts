@@ -9,17 +9,17 @@ import { LoggerMiddleware } from './logger/logger.middleware';
 Injectable({ scope: Scope.REQUEST })(UserService);
 
 @Module({
-  controllers: [UserController],
-  providers: [
-    UserService,
-    {
-      provide: 'UserRepository',
-      useClass: UserRepositoryImpl,
-    },
-  ],
+    controllers: [UserController],
+    providers: [
+        UserService,
+        {
+            provide: 'UserRepository',
+            useClass: UserRepositoryImpl,
+        },
+    ],
 })
 export class AppModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LoggerMiddleware);
-  }
+    configure(consumer: MiddlewareConsumer) {
+        consumer.apply(LoggerMiddleware);
+    }
 }
