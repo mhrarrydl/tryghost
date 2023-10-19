@@ -15,16 +15,26 @@ const {PostRevisions} = require('@tryghost/post-revisions');
  * @typedef {Object} IModels
  * @prop {Object} Base
  * @prop {(callback: function) => Promise} Base.transaction
+ * @prop {(string) => any} Base.knex
  * @prop {Object} Post
  * @prop {(frameOptions: Object) => Promise} Post.reassignByAuthor
+ * @prop {(filterOptions: object, frameOptions?: Object) => Promise} Post.findOne
+ * @prop {(tags: Object, frameOptions: Object) => Promise} Post.edit
+ * @prop {Object} Tag
+ * @prop {(tag: Object, frameOptions: Object) => Promise} Tag.add
+ * @prop {(filterOptions: object, frameOptions?: Object) => Promise} Tag.findOne
  * @prop {Object} ApiKey
  * @prop {(Object) => Promise} ApiKey.destroy
  * @prop {Object} ApiKey.NotFoundError
  * @prop {Object} User
  * @prop {(Object) => Promise} User.destroy
  * @prop {(Object) => Promise} User.findAll
+ * @prop {(filterOptions: object, frameOptions?: Object) => Promise} User.findOne
  * @prop {Object} Session
  * @prop {(Object) => Promise} Session.findAll
+ * @prop {PostRevisions} PostRevision
+ * @prop {Object} PostRevision.config
+ * @prop {Object} PostRevision.model
  */
 
 /**
@@ -145,6 +155,7 @@ class Users {
      * @param {Object} frameOptions
      * @param {string} frameOptions.id - user ID to destroy
      * @param {Object} frameOptions.context - frame context to perform the action
+     * @param {Object} frameOptions.transacting - transaction object
      * @returns
      */
     async destroyUser(frameOptions) {
