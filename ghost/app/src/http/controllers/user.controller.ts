@@ -7,8 +7,8 @@ import {
     Patch,
     Param,
     Delete,
-    Inject
-} from '@nestjs/common';
+} from '../../common/http';
+import {Inject} from '../../common/inject';
 import {UserService} from '../../ghost/user/user.service';
 import {CreateUserDto} from './dto/create-user.dto';
 import {UpdateUserDto} from './dto/update-user.dto';
