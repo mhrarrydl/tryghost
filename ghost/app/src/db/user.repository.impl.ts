@@ -9,7 +9,6 @@ export class UserRepositoryImpl implements IUserRepository {
     knex: Knex;
     constructor(@Inject('knex') knex: Knex) {
         this.knex = knex;
-        console.log(this.knex);
         this.idMap = new Map();
         this.emailMap = new Map();
     }
