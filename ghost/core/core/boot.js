@@ -423,7 +423,7 @@ async function initNestDeps() {
     const providers = Reflect.getMetadata('providers', GhostNestApp.AppModule);
     providers.push({
         provide: 'knex',
-        useValue: require('./server/data/db').knex
+        useFactory: () => require('./server/data/db').knex
     });
     providers.push({
         provide: 'config',
