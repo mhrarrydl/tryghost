@@ -1,3 +1,4 @@
+console.log('Loaded UserRepositoryImpl from disk');
 import {Inject} from "../common/inject";
 import { User } from "../ghost/user/entities/user.entity";
 import { IUserRepository } from "../ghost/user/user.repository";
@@ -7,7 +8,7 @@ export class UserRepositoryImpl implements IUserRepository {
     idMap: Map<string, User>;
     emailMap: Map<string, string>;
     knex: Knex;
-    constructor(@Inject('knex') knex: Knex) {
+    constructor(knex: Knex) {
         this.knex = knex;
         this.idMap = new Map();
         this.emailMap = new Map();

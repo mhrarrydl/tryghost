@@ -4,6 +4,7 @@ import { UserController } from './http/controllers/user.controller';
 import { IUserRepository } from './ghost/user/user.repository';
 import { UserRepositoryImpl } from './db/user.repository.impl';
 import { LoggerMiddleware } from './logger/logger.middleware';
+import {LazyModuleLoader} from '@nestjs/core';
 
 class AppModule {
     configure(consumer: MiddlewareConsumer) {
@@ -19,15 +20,16 @@ export const App = {
     providers: [
         {
             provide: 'UserService',
-            useFactory(repo: IUserRepository) {
-                const {UserService} = require('./ghost/user/user.service');
-                return new UserService(repo);
+            async useFactory(lazyModuleLoader: LazyModuleLoader) {
+                console.log('Loading UserService via factory');
+                const module = await lazyModuleLoader.load(async () => {
+                    const {Services} = await import('./services.module');
+                    return Services;
+                });
+                const {UserService} = await import('./ghost/user/user.service');
+                return module.get(UserService);
             },
-            inject: ['UserRepository']
-        },
-        {
-            provide: 'UserRepository',
-            useClass: UserRepositoryImpl,
+            inject: [LazyModuleLoader]
         },
     ],
 };
