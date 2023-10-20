@@ -30,5 +30,4 @@ export const App = {
             useClass: UserRepositoryImpl,
         },
     ],
-    exports: []
 };

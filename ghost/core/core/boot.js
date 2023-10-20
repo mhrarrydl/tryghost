@@ -422,19 +422,14 @@ async function initNestDeps() {
     const GhostNestApp = require('@tryghost/app');
     console.log(GhostNestApp);
     const providers = GhostNestApp.App.providers;
-    const exports = GhostNestApp.App.exports;
-    const knexProvider = {
+    providers.push({
         provide: 'knex',
         useFactory: () => require('./server/data/db').knex
-    };
-    providers.push(knexProvider);
-    exports.push(knexProvider);
-    const configProvider = {
+    });
+    providers.push({
         provide: 'config',
         useValue: require('./shared/config')
-    };
-    providers.push(configProvider);
-    exports.push(configProvider);
+    });
 }
 
 /**
