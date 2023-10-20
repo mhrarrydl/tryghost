@@ -29,10 +29,6 @@ export const App = {
             provide: 'UserRepository',
             useClass: UserRepositoryImpl,
         },
-        {
-            provide: 'knex',
-            useValue: 'I AM KNEX!!!!'
-        }
     ],
-    exports: ['knex']
+    exports: []
 };
