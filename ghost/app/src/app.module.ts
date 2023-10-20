@@ -32,4 +32,5 @@ export const App = {
             inject: [LazyModuleLoader]
         },
     ],
+    exports: []
 };
