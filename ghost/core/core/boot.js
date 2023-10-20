@@ -429,6 +429,7 @@ async function initNestDeps() {
     };
     providers.push(knexProvider);
     exports.push(knexProvider);
+    exports.push('knex');
     const configProvider = {
         provide: 'config',
         useValue: require('./shared/config')

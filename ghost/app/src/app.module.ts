@@ -31,6 +31,10 @@ export const App = {
             },
             inject: [LazyModuleLoader]
         },
+        {
+            provide: 'knex',
+            useValue: 'I AM KNEX!!!!'
+        }
     ],
-    exports: []
+    exports: ['knex']
 };
