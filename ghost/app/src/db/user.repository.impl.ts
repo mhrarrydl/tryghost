@@ -1,4 +1,3 @@
-console.log('Loaded UserRepositoryImpl from disk');
 import {Inject} from "../common/inject";
 import { User } from "../ghost/user/entities/user.entity";
 import { IUserRepository } from "../ghost/user/user.repository";
