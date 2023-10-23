@@ -18,7 +18,6 @@ module.exports = (name) => {
     app.use(sentry.errorHandler);
 
     app.lazyUse = function lazyUse(mountPath, requireFn) {
-        return app.use(mountPath, requireFn());
         app.use(mountPath, lazyLoad(() => {
             debug(`lazy-loading on ${mountPath}`);
             return Promise.resolve(requireFn());
