@@ -546,6 +546,7 @@ async function bootGhost({backend = true, frontend = true, server = true} = {}) 
         // We return the server purely for testing purposes
         if (server) {
             debug('End Boot: Returning Ghost Server');
+            process.exit(0);
             return ghostServer;
         } else {
             debug('End boot: Returning Root App');
