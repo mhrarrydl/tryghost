@@ -297,6 +297,7 @@ async function initAppService() {
  * @param {object} options.config
  */
 async function initServices({config}) {
+    return;
     debug('Begin: initServices');
 
     debug('Begin: Services');
