@@ -1,9 +1,11 @@
 import { MiddlewareConsumer, Module } from '@nestjs/common';
 
-import { UserController } from './http/controllers/user.controller';
-import { IUserRepository } from './ghost/user/user.repository';
-import { UserRepositoryImpl } from './db/user.repository.impl';
 import { LoggerMiddleware } from './logger/logger.middleware';
+import {CollectionController} from './http/controllers/collections/collection.controller';
+import {BookshelfCollectionsRepository} from './db/collection.knex.repository';
+import {CollectionsService} from './ghost/collections/CollectionsService';
+import {RepositoryUniqueChecker} from './ghost/collections/RepositoryUniqueChecker';
+import {CollectionSlugService} from './db/collection-slug.service';
 
 class AppModule {
     configure(consumer: MiddlewareConsumer) {
@@ -15,19 +17,24 @@ export const App = {
     module: AppModule,
     // module: null, // We can pass `null` when we do not need any configuration for the module
 
-    controllers: [UserController],
+    controllers: [CollectionController],
     providers: [
+        CollectionsService,
         {
-            provide: 'UserService',
-            useFactory(repo: IUserRepository) {
-                const {UserService} = require('./ghost/user/user.service');
-                return new UserService(repo);
-            },
-            inject: ['UserRepository']
+            provide: 'CollectionsService',
+            useClass: CollectionsService
         },
         {
-            provide: 'UserRepository',
-            useClass: UserRepositoryImpl,
+            provide: 'CollectionRepository',
+            useClass: BookshelfCollectionsRepository
         },
+        {
+            provide: 'CollectionUniqueChecker',
+            useClass: RepositoryUniqueChecker
+        },
+        {
+            provide: 'CollectionSlugService',
+            useClass: CollectionSlugService
+        }
     ],
 };

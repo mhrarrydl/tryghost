@@ -430,6 +430,30 @@ async function initNestDeps() {
         provide: 'config',
         useValue: require('./shared/config')
     });
+    providers.push({
+        provide: 'Logger',
+        useValue: require('@tryghost/logging')
+    });
+    providers.push({
+        provide: 'Sentry',
+        useValue: require('./shared/sentry')
+    });
+    providers.push({
+        provide: 'DomainEvents',
+        useValue: require('@tryghost/domain-events')
+    });
+    providers.push({
+        provide: 'CollectionModel',
+        useValue: require('./server/models').Collection
+    });
+    providers.push({
+        provide: 'CollectionPostModel',
+        useValue: require('./server/models').CollectionPost
+    });
+    providers.push({
+        provide: 'CollectionPostsRepository',
+        useValue: require('./server/services/collections/PostsRepository').getInstance()
+    });
 }
 
 /**
@@ -514,14 +538,14 @@ async function bootGhost({backend = true, frontend = true, server = true} = {}) 
         bootLogger.log('database ready');
         debug('End: Get DB ready');
 
-        debug('Begin: Setup dependencies for Nest');
-        await initNestDeps();
-        debug('End: Setup dependencies for Nest');
-
         // Step 4 - Load Ghost with all its services
         debug('Begin: Load Ghost Services & Apps');
         await initCore({ghostServer, config, bootLogger, frontend});
         const {dataService} = await initServicesForFrontend({bootLogger});
+
+        debug('Begin: Setup dependencies for Nest');
+        await initNestDeps();
+        debug('End: Setup dependencies for Nest');
 
         if (frontend) {
             await initFrontend(dataService);

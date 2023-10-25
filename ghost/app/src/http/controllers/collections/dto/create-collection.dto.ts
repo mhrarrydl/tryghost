@@ -1,5 +1,6 @@
 import { IsPositive, IsEmail, IsString } from "class-validator";
-export class CreateUserDto {
+
+export class CreateCollectionDTO {
     @IsString()
     name!: string;
 
