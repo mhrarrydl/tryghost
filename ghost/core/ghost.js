@@ -24,5 +24,5 @@ case 'record-test':
     break;
 default:
     // New boot sequence
-    require('./core/boot')();
+    require('./build/boot')();
 }

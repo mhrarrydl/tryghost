@@ -46,6 +46,9 @@ const {PostRevisions} = require('@tryghost/post-revisions');
  * @prop {(token: string, apiMail: Object) => Promise} passwordreset.sendResetNotification
  */
 
+const POST_REVISIONS_COUNT = 25;
+const POST_REVISIONS_INTERVAL_MS = 10 * 60 * 1000; // 10 minutes
+
 class Users {
     /**
      * @param {Object} dependencies
@@ -167,7 +170,11 @@ class Users {
             frameOptions.transacting = t;
 
             const postRevisions = new PostRevisions({
-                model: this.models.PostRevision
+                model: this.models.PostRevision,
+                config: {
+                    max_revisions: POST_REVISIONS_COUNT,
+                    revision_interval_ms: POST_REVISIONS_INTERVAL_MS
+                }
             });
 
             await postRevisions.removeAuthorFromRevisions(frameOptions.id, {
