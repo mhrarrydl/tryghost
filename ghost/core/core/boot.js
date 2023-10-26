@@ -454,6 +454,10 @@ async function initNestDeps() {
         provide: 'CollectionPostsRepository',
         useValue: require('./server/services/collections/PostsRepository').getInstance()
     });
+    providers.push({
+        provide: 'SessionService',
+        useValue: require('./server/services/auth/session').sessionService
+    });
 }
 
 /**

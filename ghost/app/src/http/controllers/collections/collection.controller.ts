@@ -9,22 +9,28 @@ import {
     Delete,
     Query,
     Inject,
-    UseInterceptors
+    UseInterceptors,
+    UseGuards
 } from "@nestjs/common";
 import {JsonApiInterceptor} from "../../interceptors/json-api.interceptor";
+import {PermissionsGuard} from "../../guards/permissions.guard";
+import {Roles} from "../../decorators/roles.decorator";
 
 @Controller("collections")
 @UseInterceptors(new JsonApiInterceptor('collections'))
+@UseGuards(PermissionsGuard)
 export class CollectionController {
     constructor(
         @Inject('CollectionsService') private readonly collectionsService: CollectionsService
     ) {}
 
+    @Roles(['Owner', 'Admin'])
     @Post()
     create(@Body() createCollectionDto: any) {
         return this.collectionsService.createCollection(createCollectionDto);
     }
 
+    @Roles(['Owner', 'Admin', 'Editor', 'Author', 'Contributor'])
     @Get()
     async findAll(
         @Query('page') page: number,
@@ -39,6 +45,7 @@ export class CollectionController {
         return result;
     }
 
+    @Roles(['Owner', 'Admin', 'Editor', 'Author', 'Contributor'])
     @Get(":id")
     async findOneById(@Param() id: string) {
         const result = await this.collectionsService.getById(id);
@@ -50,6 +57,7 @@ export class CollectionController {
         return result;
     }
 
+    @Roles(['Owner', 'Admin', 'Editor', 'Author', 'Contributor'])
     @Get("slug/:slug")
     async findOneBySlug(@Param() slug: string) {
         const result = await this.collectionsService.getBySlug(slug);
@@ -61,6 +69,7 @@ export class CollectionController {
         return result;
     }
 
+    @Roles(['Owner', 'Admin'])
     @Put(":id")
     async update(@Param("id") id: string, @Body() updateCollectionDto: any) {
         const result = await this.collectionsService.edit({
@@ -75,6 +84,7 @@ export class CollectionController {
         return result;
     }
 
+    @Roles(['Owner', 'Admin'])
     @Delete(":id")
     async remove(@Param() id: string) {
         return this.collectionsService.destroy(id);

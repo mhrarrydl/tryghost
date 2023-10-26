@@ -1,15 +1,15 @@
-import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { MiddlewareConsumer } from '@nestjs/common';
 
-import { LoggerMiddleware } from './logger/logger.middleware';
 import {CollectionController} from './http/controllers/collections/collection.controller';
 import {BookshelfCollectionsRepository} from './db/collection.knex.repository';
 import {CollectionsService} from './ghost/collections/CollectionsService';
 import {RepositoryUniqueChecker} from './ghost/collections/RepositoryUniqueChecker';
 import {CollectionSlugService} from './db/collection-slug.service';
+import {UserAuthMiddleware} from './http/middleware/user-auth.middleware';
 
 class AppModule {
     configure(consumer: MiddlewareConsumer) {
-        consumer.apply(LoggerMiddleware);
+        consumer.apply(UserAuthMiddleware).forRoutes('*');
     }
 }
 
