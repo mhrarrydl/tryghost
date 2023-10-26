@@ -23,23 +23,15 @@ export class JsonApiInterceptor<T, K extends string> implements NestInterceptor<
     ): Observable<Response<T, K>> {
         const request = context.switchToHttp().getRequest();
         request.body = request.body?.[this.key];
-        console.log('Mapped body');
-        console.log(request.body);
 
         return next.handle().pipe(map((data) => {
-            console.log('Mapping output');
-            console.log(data);
-            const meta = data.meta;
-            delete data.meta;
             const result = {
                 [this.key]: data.data
             } as Response<T, K>;
 
-            if (meta) {
-                result.meta = meta;
+            if (data.meta) {
+                result.meta = data.meta;
             }
-
-            console.log(result);
 
             return result;
         }));
