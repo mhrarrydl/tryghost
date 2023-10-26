@@ -1,4 +1,4 @@
-import {CollectionsService} from "src/ghost/collections/CollectionsService";
+import {CollectionsService} from "../../../ghost/collections/CollectionsService";
 import {
     Controller,
     Get,
@@ -8,10 +8,13 @@ import {
     Param,
     Delete,
     Query,
-    Inject
+    Inject,
+    UseInterceptors
 } from "@nestjs/common";
+import {JsonApiInterceptor} from "../../interceptors/json-api.interceptor";
 
 @Controller("collections")
+@UseInterceptors(new JsonApiInterceptor('collections'))
 export class CollectionController {
     constructor(
         @Inject('CollectionsService') private readonly collectionsService: CollectionsService
