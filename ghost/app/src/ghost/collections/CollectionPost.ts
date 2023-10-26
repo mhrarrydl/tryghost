@@ -1,4 +1,3 @@
-// eslint-disable-next-line ghost/filenames/match-regex
 export type CollectionPost = {
     id: string;
     featured: boolean;
