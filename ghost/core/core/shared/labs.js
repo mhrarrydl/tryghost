@@ -48,7 +48,8 @@ const ALPHA_FEATURES = [
     'filterEmailDisabled',
     'adminXDemo',
     'newEmailAddresses',
-    'portalImprovements'
+    'portalImprovements',
+    'nestSnippetsAPI'
 ];
 
 module.exports.GA_KEYS = [...GA_FEATURES];
