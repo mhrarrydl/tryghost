@@ -50,7 +50,8 @@ const ALPHA_FEATURES = [
     'filterEmailDisabled',
     'adminXDemo',
     'tkReminders',
-    'newEmailAddresses'
+    'newEmailAddresses',
+    'nestSnippetsAPI'
 ];
 
 module.exports.GA_KEYS = [...GA_FEATURES];
