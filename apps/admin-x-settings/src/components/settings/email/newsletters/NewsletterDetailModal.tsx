@@ -177,6 +177,7 @@ const Sidebar: React.FC<{
                     error={Boolean(errors.sender_email)}
                     hint={errors.sender_email || `If left empty, noreply@${sendingDomain(config)} will be used`}
                     rightPlaceholder={`@${sendingDomain(config)}`}
+                    rightPlaceholderSticky={true}
                     title="Sender email address"
                     value={sendingEmailUsername || ''}
                     onBlur={validate}

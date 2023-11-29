@@ -14,6 +14,7 @@ export type TextFieldProps = React.InputHTMLAttributes<HTMLInputElement> & {
     error?: boolean;
     placeholder?: string;
     rightPlaceholder?: React.ReactNode;
+    rightPlaceholderSticky?: boolean;
     hint?: React.ReactNode;
     clearBg?: boolean;
     onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -37,6 +38,7 @@ const TextField: React.FC<TextFieldProps> = ({
     error,
     placeholder,
     rightPlaceholder,
+    rightPlaceholderSticky = false,
     hint,
     onChange,
     onFocus,
@@ -85,7 +87,8 @@ const TextField: React.FC<TextFieldProps> = ({
         'z-[1] order-3 rounded-r-lg',
         (rightPlaceholder ?
             ((typeof (rightPlaceholder) === 'string') ? 'flex h-8 items-center py-1 pr-3 text-right text-sm text-grey-500 md:h-9 md:text-base' : 'h-9 pr-1')
-            : 'pr-2')
+            : 'pr-2'),
+        ((rightPlaceholderSticky && !(value === undefined || value.trim() === '')) ? 'absolute left-0 transition-all' : 'absolute right-0 transition-all')
     );
 
     let field = <></>;
@@ -108,7 +111,7 @@ const TextField: React.FC<TextFieldProps> = ({
         <div className={fieldContainerClasses}>
             {inputField}
             {!unstyled && !clearBg && <div className={bgClasses ? bgClasses : ''}></div>}
-            {rightPlaceholder && <span className={rightPlaceholderClasses || ''}>{rightPlaceholder}</span>}
+            {rightPlaceholder && <span className={rightPlaceholderClasses || ''}>{rightPlaceholderSticky && <span className='invisible pl-3'>{value}</span>}<span>{rightPlaceholder}</span></span>}
         </div>
     );
 
@@ -121,6 +124,8 @@ const TextField: React.FC<TextFieldProps> = ({
         'flex flex-col',
         containerClassName
     );
+
+    console.log('Value is ' + rightPlaceholderSticky && 'absolute' && !(value === undefined || value.trim() === ''));
 
     if (title || hint) {
         return (
