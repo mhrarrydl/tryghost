@@ -66,8 +66,8 @@ export class SnippetsService {
 
     async getPage(options: {filter?: string, page: number, limit: number}) {
         const filter = options.filter;
-        const page = options.page || 1;
-        const limit = options.limit || 15;
+        const page = options.page;
+        const limit = options.limit;
 
         const data = await this.repository.getSome({
             count: limit,

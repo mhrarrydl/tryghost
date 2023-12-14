@@ -18,7 +18,9 @@ describe('SnippetService', () => {
         assert(allSnippets[0].name === snippet.name);
 
         const updated = await service.update(snippet.id, {
-            name: 'Updated Name'
+            name: 'Updated Name',
+            lexical: '{}',
+            mobiledoc: '{}'
         });
 
         assert(updated);
@@ -30,10 +32,22 @@ describe('SnippetService', () => {
 
         assert(pageOfSnippets.data[0].name === updated.name);
 
-        await service.delete(snippet.id);
+        const deleted = await service.delete(snippet.id);
+
+        assert(deleted);
+
+        const cannotDelete = await service.delete(deleted.id);
+
+        assert(!cannotDelete);
+
+        const cannotUpdate = await service.update(deleted.id, {
+            name: 'Updated Again'
+        });
+
+        assert(!cannotUpdate);
 
         const notFound = await service.getOne(snippet.id);
 
-        assert(notFound === null);
+        assert(!notFound);
     });
 });
