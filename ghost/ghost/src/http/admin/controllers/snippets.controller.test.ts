@@ -3,7 +3,7 @@ import {Test} from '@nestjs/testing';
 import {Snippet} from '../../../core/snippets/snippet.entity';
 import {SnippetsController} from './snippets.controller';
 import {SnippetsService} from '../../../core/snippets/snippets.service';
-import {SnippetsRepositoryInMemory} from '../../../core/snippets/snippets.repository.inmemory';
+import {SnippetsRepositoryInMemory} from '../../../db/in-memory/snippets.repository.inmemory';
 import assert from 'assert/strict';
 import {SnippetsRepository} from '../../../core/snippets/snippets.repository.interface';
 
