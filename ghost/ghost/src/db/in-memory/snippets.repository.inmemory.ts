@@ -1,6 +1,6 @@
 import ObjectID from 'bson-objectid';
-import {Snippet} from './snippet.entity';
-import {SnippetsRepository} from './snippets.repository.interface';
+import {Snippet} from '../../core/snippets/snippet.entity';
+import {SnippetsRepository} from '../../core/snippets/snippets.repository.interface';
 import {OrderOf, Page} from '../../common/interfaces/repository.interface';
 import nql from '@tryghost/nql';
 
@@ -13,6 +13,10 @@ export class SnippetsRepositoryInMemory implements SnippetsRepository {
     }
 
     async save(entity: Snippet): Promise<void> {
+        if (entity.deleted) {
+            this.snippets.delete(entity.id.toHexString());
+            return;
+        }
         this.snippets.set(entity.id.toHexString(), entity);
     }
     async getAll(order: OrderOf<[]>[], filter?: string | undefined): Promise<Snippet[]> {
