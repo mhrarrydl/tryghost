@@ -4,11 +4,13 @@ const bodyParser = require('body-parser');
 const errorHandler = require('@tryghost/mw-error-handler');
 const versionMatch = require('@tryghost/mw-version-match');
 
+const labs = require('../../../../../shared/labs');
 const shared = require('../../../shared');
 const express = require('../../../../../shared/express');
 const sentry = require('../../../../../shared/sentry');
 const routes = require('./routes');
 const APIVersionCompatibilityService = require('../../../../services/api-version-compatibility');
+const GhostNestApp = require('@tryghost/ghost');
 
 module.exports = function setupApiApp() {
     debug('Admin API setup start');
@@ -32,6 +34,25 @@ module.exports = function setupApiApp() {
 
     // Routing
     apiApp.use(routes());
+
+    let nestAppPromise = null;
+    function getNestAppPromise() {
+        if (!nestAppPromise) {
+            nestAppPromise = GhostNestApp.create().then(async (app) => {
+                await app.init();
+                return app;
+            });
+        }
+        return nestAppPromise;
+    }
+
+    apiApp.use(async (req, res, next) => {
+        if (!labs.isSet('NestPlayground')) {
+            return next();
+        }
+        const app = await getNestAppPromise();
+        app.getHttpAdapter().getInstance()(req, res, next);
+    });
 
     // API error handling
     apiApp.use(errorHandler.resourceNotFound);
