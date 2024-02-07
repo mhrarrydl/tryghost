@@ -68,6 +68,48 @@ if (!knexInstance && config.get('database') && config.get('database').client) {
         const instrumentation = new ConnectionPoolInstrumentation({knex: knexInstance, logging, metrics, config});
         instrumentation.instrument();
     }
+
+    const asyncLocalStore = require('../../../../../async-local-store');
+
+    // Monkey patch acquireConnection and releaseConnection to retrieve a connection
+    // stored in the async context and prevent it from being released prematurely
+    const _acquireConnection = knexInstance.client.acquireConnection;
+    const _releaseConnection = knexInstance.client.releaseConnection;
+
+    knexInstance.client.acquireConnection = async function () {
+        // https://github.com/knex/knex/blob/master/lib/client.js#L309
+
+        const ctx = asyncLocalStore.getStore();
+        const connection = ctx?.connection;
+
+        // If we have a connection stored in the async context, use it
+        if (connection) {
+            logging.debug(`[${ctx.reqId}] Using ${connection.__knexUid}`);
+
+            return Promise.resolve(connection);
+        }
+
+        return _acquireConnection.call(knexInstance.client);
+    };
+
+    knexInstance.client.releaseConnection = (connection) => {
+        // https://github.com/knex/knex/blob/master/lib/client.js#L343
+
+        const reqId = asyncLocalStore.getStore()?.reqId;
+
+        // If the connection has a __doNotRelease flag, prevent it from being released
+        if (connection.__doNotRelease === true) {
+            logging.debug(`[${reqId}] Keeping ${connection.__knexUid}`);
+
+            return Promise.resolve();
+        }
+
+        if (reqId) {
+            logging.debug(`[${reqId}] Releasing ${connection.__knexUid}`);
+        }
+
+        return _releaseConnection.call(knexInstance.client, connection);
+    };
 }
 
 module.exports = knexInstance;
